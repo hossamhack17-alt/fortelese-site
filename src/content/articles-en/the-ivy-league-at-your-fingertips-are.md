@@ -5,6 +5,7 @@ pubDate: 2026-07-18T14:05:53.000Z
 updatedDate: 2026-07-18T14:05:53.000Z
 category: "Education"
 categorySlug: education
+section: online-mba
 tags: ["online MBA", "education"]
 draft: false
 author: "Fortelese Editorial"

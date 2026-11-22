@@ -31,6 +31,7 @@ const articlesEn = defineCollection({
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     originalUrl: z.string().optional(),
+    section: z.string().default("online-mba"),
     author: z.string().default("Fortelese Editorial")
   })
 });

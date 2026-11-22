@@ -5,6 +5,7 @@ pubDate: 2025-02-23T12:19:00.000Z
 updatedDate: 2025-02-23T12:19:00.000Z
 category: "Education"
 categorySlug: education
+section: crypto
 tags: ["online MBA", "education"]
 draft: false
 author: "Fortelese Editorial"

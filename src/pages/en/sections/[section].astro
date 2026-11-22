@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { EN_SECTIONS as SECTIONS, sectionSlugs } from "../../../data/en-sections";
+
+export async function getStaticPaths() {
+  return sectionSlugs.map((slug) => ({ params: { section: slug } }));
+}
+
+const { section } = Astro.params as { section: string };
+const posts = (await getCollection("articlesEn"))
+  .filter((p) => p.data.section === section)
+  .sort((a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0));
+---
+<BaseLayout
+  lang="en"
+  dir="ltr"
+  title={SECTIONS[section] ?? section}
+  description={`English guides in ${SECTIONS[section] ?? section}: ${posts.length} articles on Fortelese.`}
+>
+  <section class="page-intro container">
+    <p class="eyebrow"><a href="/en/">English</a> · section</p>
+    <h1>{SECTIONS[section] ?? section}</h1>
+    <p>{posts.length} articles in this section.</p>
+  </section>
+  <section class="container">
+    <div class="article-grid">
+      {posts.map((p) => (
+        <article class="article-card">
+          <h3><a href={`/en/${p.id}/`}>{p.data.title}</a></h3>
+          <p>{p.data.description}</p>
+          <p class="card-meta">{p.data.pubDate?.toISOString().slice(0, 10)}</p>
+        </article>
+      ))}
+    </div>
+    <p style="margin-top:2rem"><a class="secondary-button" href="/en/">All English articles</a></p>
+  </section>
+</BaseLayout>
