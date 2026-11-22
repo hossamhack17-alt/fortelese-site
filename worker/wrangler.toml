@@ -1,0 +1,16 @@
+name = "legacy-host-redirect"
+main = "legacy-redirect.js"
+compatibility_date = "2024-11-01"
+workers_dev = false
+
+# النطاقات الفرعية القديمة فقط — لا نُمرّر www/apex من هنا لتفادي حلقة تحويل.
+routes = [
+  { pattern = "so.fortelese.com/*", zone_name = "fortelese.com" },
+  { pattern = "ma.fortelese.com/*", zone_name = "fortelese.com" },
+  { pattern = "a.fortelese.com/*", zone_name = "fortelese.com" },
+  { pattern = "ea.fortelese.com/*", zone_name = "fortelese.com" },
+  { pattern = "anera.fortelese.com/*", zone_name = "fortelese.com" },
+  { pattern = "ar.fortelese.com/*", zone_name = "fortelese.com" },
+  { pattern = "hilal.fortelese.com/*", zone_name = "fortelese.com" },
+  { pattern = "oxfam.fortelese.com/*", zone_name = "fortelese.com" }
+]
