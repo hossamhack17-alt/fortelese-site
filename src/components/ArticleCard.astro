@@ -8,5 +8,5 @@ const date = article.data.pubDate;
   <div class="card-meta"><span>{article.data.category}</span>{date && <time datetime={date.toISOString()}>{date.toLocaleDateString("ar")}</time>}</div>
   <h3><a href={postPath(article)}>{article.data.title}</a></h3>
   <p>{article.data.description}</p>
-  <a class="read-more" href={postPath(article)}>اقرأ المقال <span aria-hidden="true">←</span></a>
+  <a class="read-more" href={postPath(article)} aria-label={`اقرأ المقال: ${article.data.title}`}>اقرأ المقال <span aria-hidden="true">←</span></a>
 </article>

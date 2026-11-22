@@ -75,7 +75,7 @@
 
   function applyAccent(name: string) {
     root.dataset.accent = name;
-    document.querySelectorAll<HTMLElement>("[data-accent]").forEach((el) => {
+    document.querySelectorAll<HTMLElement>(".swatch[data-accent]").forEach((el) => {
       el.setAttribute("aria-checked", String(el.dataset.accent === name));
     });
   }
@@ -111,7 +111,7 @@
     })
   );
 
-  document.querySelectorAll<HTMLElement>("[data-accent]").forEach((b) =>
+  document.querySelectorAll<HTMLElement>(".swatch[data-accent]").forEach((b) =>
     b.addEventListener("click", () => {
       const name = b.dataset.accent || "green";
       localStorage.setItem(STORE.accent, name);
@@ -280,12 +280,29 @@
   top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   document.body.appendChild(top);
 
+  // قياس واحد مخزَّن (بلا قراءة تخطيط داخل كل حدث تمرير = بلا forced reflow)
+  let docHeight = 0;
+  let viewHeight = 0;
+  const measure = () => {
+    const el = document.scrollingElement || document.documentElement;
+    docHeight = el.scrollHeight;
+    viewHeight = el.clientHeight;
+  };
+  measure();
+  addEventListener("resize", measure, { passive: true });
+  addEventListener("load", measure, { once: true });
+
+  let ticking = false;
   const onScroll = () => {
-    const h = document.documentElement;
-    const p = h.scrollHeight - h.clientHeight;
-    const ratio = p > 0 ? h.scrollTop / p : 0;
-    bar.style.transform = `scaleX(${ratio})`;
-    top.classList.toggle("is-visible", h.scrollTop > 700);
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY || 0;
+      const span = docHeight - viewHeight;
+      bar.style.transform = `scaleX(${span > 0 ? Math.min(1, y / span) : 0})`;
+      top.classList.toggle("is-visible", y > 700);
+      ticking = false;
+    });
   };
   addEventListener("scroll", onScroll, { passive: true });
   onScroll();

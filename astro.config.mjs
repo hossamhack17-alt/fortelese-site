@@ -19,5 +19,5 @@ export default defineConfig({
       }
     })
   ],
-  build: { format: "file" }
+  build: { format: "file", inlineStylesheets: "always" }
 });
