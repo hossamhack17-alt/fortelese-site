@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("articlesEn", ({ data }) => !data.draft)).sort(
+  (a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0)
+);
+---
+<BaseLayout
+  lang="en"
+  dir="ltr"
+  title="English Articles"
+  description="English-language guides from Fortelese: online MBA programs, career development and practical education explainers."
+>
+  <section class="page-intro container">
+    <span class="eyebrow">English section</span>
+    <h1>English Articles</h1>
+    <p>Long-form English guides on online education, career paths and professional selection criteria. Each page keeps its original publication date and a link to its first appearance.</p>
+  </section>
+
+  <section class="container">
+    <div class="article-grid">
+      {posts.map((p) => (
+        <article class="article-card">
+          <h3><a href={`/en/${p.id}/`}>{p.data.title}</a></h3>
+          <p>{p.data.description}</p>
+          <p class="card-meta">
+            {p.data.pubDate?.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}
+            {p.data.originalUrl && <> · <a href={p.data.originalUrl} rel="nofollow noopener" target="_blank">original</a></>}
+          </p>
+        </article>
+      ))}
+    </div>
+    <p style="margin-top:2rem"><a class="secondary-button" href="/">← Back to the Arabic site</a></p>
+  </section>
+</BaseLayout>

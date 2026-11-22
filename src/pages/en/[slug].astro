@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("articlesEn");
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: CollectionEntry<"articlesEn"> };
+const date = post.data.pubDate?.toISOString().slice(0, 10);
+const words = post.body?.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length ?? 0;
+---
+<BaseLayout
+  lang="en"
+  dir="ltr"
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+>
+  <article class="container prose article-body">
+    <p class="eyebrow"><a href="/en/">English</a> · {post.data.category}</p>
+    <h1>{post.data.title}</h1>
+    <p class="card-meta">
+      {date} · {Math.round(words / 200)} min read · {post.data.author}
+      {post.data.originalUrl && <> · <a href={post.data.originalUrl} rel="nofollow noopener" target="_blank">first published here</a></>}
+    </p>
+    <div set:html={post.body} />
+    <hr />
+    <p><a href="/en/">← All English articles</a> · <a href="/">الموقع العربي</a></p>
+  </article>
+</BaseLayout>

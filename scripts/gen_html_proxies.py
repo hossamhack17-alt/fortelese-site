@@ -43,6 +43,29 @@ for rel in htmls:
     lines.append(f"{rel}  {dst}  200")
     count += 1
 
+# تحويلات الأرشيف القديم (من Wayback) — تُقرأ من data/legacy-redirects.tsv
+legacy_file = os.path.join("data", "legacy-redirects.tsv")
+legacy_count = 0
+if os.path.exists(legacy_file):
+    proxy_srcs = {ln.split()[0] for ln in lines if ln.endswith("200")}
+    for ln in open(legacy_file, encoding="utf-8"):
+        ln = ln.strip()
+        if not ln or ln.startswith("#"):
+            continue
+        src = ln.split()[0]
+        if src in proxy_srcs:      # المسار الحالي يخدم 200 — لا نكسره بتحويل
+            continue
+        lines.append(ln)
+        legacy_count += 1
+
+# قواعد إضافية (نهايات مائلة للأقسام الإنجليزية)
+extra_file = os.path.join("data", "extra-redirects.tsv")
+if os.path.exists(extra_file):
+    for ln in open(extra_file, encoding="utf-8"):
+        ln = ln.strip()
+        if ln and not ln.startswith("#"):
+            lines.append(ln)
+
 lines.append("")
 for src, dst in LEGACY_301:
     lines.append(f"{urllib.parse.quote(src)}  {dst}  301")
@@ -50,4 +73,4 @@ for src, dst in LEGACY_301:
 os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
 with open(out, "w", encoding="utf-8", newline="\n") as fh:
     fh.write("\n".join(lines) + "\n")
-print(f"wrote {out}: {count} proxies + {len(LEGACY_301)} redirects")
+print(f"wrote {out}: {count} proxies + {legacy_count} legacy 301 + {len(LEGACY_301)} manual 301")

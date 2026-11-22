@@ -22,6 +22,7 @@ for (const f of files) {
   const html = readFileSync(f, "utf8");
   const rel = f.replace(/\\/g, "/");
   const h1 = (html.match(/<h1\b/gi) || []).length;
+  const isEn = rel.includes("/en/");
   if (h1 !== 1) issues.push(`${rel}: عدد H1 = ${h1}`);
   const t = (html.match(/<title>([^<]*)<\/title>/i) || [])[1] || "";
   const d = (html.match(/<meta name="description" content="([^"]*)"/i) || [])[1] || "";
@@ -31,9 +32,11 @@ for (const f of files) {
   if (MOJI.test(html)) issues.push(`${rel}: ترميز تالف`);
   if (html.includes("undefined") && !rel.includes("404")) issues.push(`${rel}: نص undefined`);
   if (/\[\[|\]\]/.test(html)) issues.push(`${rel}: أقواس قالب متبقية`);
-  if (!/<html[^>]+lang="ar"/i.test(html)) issues.push(`${rel}: lang غير عربي`);
-  if (t && /طموح[^<]*طموح/.test(t)) issues.push(`${rel}: اسم العلامة مكرر في العنوان`);
-  if (t && t.length > 70) issues.push(`${rel}: عنوان طويل (${t.length} حرفًا)`);
+  const langAttr = (html.match(/<html[^>]+lang="([a-z-]+)"/i) || [])[1] || "?";
+  const wantLang = /lang="en"/i.test(html) ? "en" : "ar";
+  if (!["ar", "en"].includes(langAttr)) issues.push(`${rel}: lang غير معروف (${langAttr})`);
+  if (!isEn && t && /طموح[^<]*طموح/.test(t)) issues.push(`${rel}: اسم العلامة مكرر في العنوان`);
+  if (t && t.length > (isEn ? 95 : 70)) issues.push(`${rel}: عنوان طويل (${t.length})`);
   if (t) titles.set(t, [...(titles.get(t) || []), rel]);
   if (d) descs.set(d, [...(descs.get(d) || []), rel]);
 }

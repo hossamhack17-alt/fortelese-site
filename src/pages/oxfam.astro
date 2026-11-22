@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+// فهرس أرشيفي: يجمع صفحات blog.fortelese.com الفرعي (oxfam) ويصلها بنسختها داخل /en/
+const posts = (await getCollection("articlesEn")).sort(
+  (a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0)
+);
+const byOriginal = new Map(posts.filter((p) => p.data.originalUrl).map((p) => [p.data.originalUrl as string, p.id]));
+
+const oxfamHost = "oxfam.fortelese.com";
+const rows = posts
+  .filter((p) => p.data.originalUrl?.includes(oxfamHost))
+  .map((p) => ({ title: p.data.title, slug: p.id, original: p.data.originalUrl as string, date: p.data.pubDate }));
+---
+<BaseLayout
+  lang="en"
+  dir="ltr"
+  title="Oxfam archive"
+  description="Index of every page previously published on oxfam.fortelese.com, with its new location on the main site so no link is lost."
+>
+  <section class="page-intro container">
+    <span class="eyebrow">Archive</span>
+    <h1>oxfam.fortelese.com — link index</h1>
+    <p>All pages found on the old subdomain, mapped to their new home. The subdomain itself is a separate host and is not redirected from here; this page preserves its link inventory.</p>
+  </section>
+
+  <section class="container">
+    <p class="card-meta">{rows.length} pages archived · host: {oxfamHost}</p>
+    <div class="article-grid">
+      {rows.map((r) => (
+        <article class="article-card">
+          <h3><a href={`/en/${r.slug}/`}>{r.title}</a></h3>
+          <p class="card-meta">
+            {r.date?.toISOString().slice(0, 10)} ·
+            <a href={r.original} rel="nofollow noopener" target="_blank">old URL</a>
+          </p>
+        </article>
+      ))}
+    </div>
+    <p style="margin-top:2rem"><a class="secondary-button" href="/en/">All English articles</a></p>
+  </section>
+</BaseLayout>
