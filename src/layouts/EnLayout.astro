@@ -1,0 +1,105 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  type?: string;
+}
+const { title, description = "English guides on online education, careers and markets.", type = "website" } = Astro.props;
+const pageTitle = title ? `${title} | Fortelese` : "Fortelese — English";
+const canonical = new URL(Astro.url.pathname, site.url).toString();
+
+const nav = [
+  { href: "/en", label: "Home" },
+  { href: "/en/sections/online-mba", label: "Online MBA" },
+  { href: "/en/sections/executive-career", label: "Careers" },
+  { href: "/en/sections/crypto", label: "Markets" },
+  { href: "/oxfam", label: "Archive" },
+];
+---
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Fortelese" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="alternate" hreflang="ar" href="https://www.fortelese.com/" />
+    <link rel="alternate" hreflang="en" href={canonical} />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Fortelese",
+      url: "https://www.fortelese.com/en",
+      inLanguage: "en",
+    })} />
+    <style>
+      :root { color-scheme: light; }
+      body.en { margin: 0; background: #fff; color: #14211d; font-family: ui-sans-serif, system-ui, "Segoe UI", Arial, sans-serif; line-height: 1.65; }
+      .en-wrap { width: min(1080px, 92vw); margin-inline: auto; }
+      .en-header { border-bottom: 1px solid #e5eae6; position: sticky; top: 0; background: #fffffff2; backdrop-filter: blur(8px); z-index: 20; }
+      .en-header .en-wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 64px; }
+      .en-brand { font-weight: 800; letter-spacing: -0.02em; font-size: 1.15rem; color: #123d35; text-decoration: none; }
+      .en-nav { display: flex; gap: 1.1rem; flex-wrap: wrap; }
+      .en-nav a { color: #3b4f48; text-decoration: none; font-size: 0.94rem; }
+      .en-nav a:hover { color: #123d35; }
+      .en-lang { border: 1px solid #cfdcd4; border-radius: 999px; padding: 0.4rem 0.9rem; font-size: 0.86rem; text-decoration: none; color: #123d35; white-space: nowrap; }
+      .en-lang:hover { background: #f2f7f3; }
+      main { display: block; padding: 2.4rem 0 3.5rem; }
+      h1 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.2; margin: 0 0 0.8rem; letter-spacing: -0.02em; }
+      h2 { font-size: 1.4rem; margin: 2.2rem 0 0.7rem; }
+      h3 { font-size: 1.08rem; margin: 0 0 0.4rem; }
+      p { margin: 0 0 1rem; }
+      a { color: #1d6556; }
+      .eyebrow { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem; color: #6b8078; }
+      .grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+      .card { border: 1px solid #e5eae6; border-radius: 14px; padding: 1.1rem 1.2rem; background: #fff; }
+      .card h3 a { text-decoration: none; color: #14211d; }
+      .card h3 a:hover { color: #1d6556; }
+      .meta { font-size: 0.82rem; color: #6b8078; margin: 0.4rem 0 0; }
+      .prose { max-width: 760px; }
+      .prose img { max-width: 100%; height: auto; border-radius: 10px; }
+      .prose blockquote { border-left: 3px solid #cfdcd4; margin: 1.2rem 0; padding-left: 1rem; color: #3b4f48; }
+      .prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+      .prose th, .prose td { border: 1px solid #e5eae6; padding: 0.5rem 0.6rem; text-align: left; }
+      .en-footer { border-top: 1px solid #e5eae6; padding: 1.6rem 0 2.4rem; color: #6b8078; font-size: 0.86rem; }
+      .en-footer a { color: #3b4f48; }
+      .btn { display: inline-block; border: 1px solid #cfdcd4; border-radius: 999px; padding: 0.5rem 1rem; text-decoration: none; color: #123d35; font-size: 0.9rem; }
+      .btn:hover { background: #f2f7f3; }
+      .skip { position: absolute; left: -9999px; }
+      .skip:focus { left: 1rem; top: 1rem; background: #fff; padding: 0.5rem 1rem; border: 1px solid #123d35; z-index: 99; }
+    </style>
+  </head>
+  <body class="en">
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="en-header">
+      <div class="en-wrap">
+        <a class="en-brand" href="/en">Fortelese</a>
+        <nav class="en-nav" aria-label="English">
+          {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+        </nav>
+        <a class="en-lang" href="/" hreflang="ar" lang="ar">العربية</a>
+      </div>
+    </header>
+    <main id="main">
+      <div class="en-wrap"><slot /></div>
+    </main>
+    <footer class="en-footer">
+      <div class="en-wrap">
+        <p>Fortelese — English edition. Editorial guides on online education, careers and markets.</p>
+        <p><a href="/en">All articles</a> · <a href="/oxfam">Archive index</a> · <a href="/">العربية</a></p>
+      </div>
+    </footer>
+  </body>
+</html>

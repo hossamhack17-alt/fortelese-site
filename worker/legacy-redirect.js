@@ -42,7 +42,7 @@ const OXFAM_MAP = {
  "/2026/07/the-ivy-league-at-your-fingertips-are.html": "/en/the-ivy-league-at-your-fingertips-are",
  "/2025/04/top-affordable-online-mba-programs.html": "/en/top-affordable-online-mba-programs"
 };
-const OXFAM_FALLBACK = "/oxfam";
+const OXFAM_FALLBACK = "/en";
 
 function redirect(location, status = 301) {
   return new Response(null, { status, headers: { location, "cache-control": "public, max-age=3600" } });

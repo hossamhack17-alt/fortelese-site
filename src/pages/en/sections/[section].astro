@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro";
+import EnLayout from "../../../layouts/EnLayout.astro";
 import { getCollection } from "astro:content";
 import { EN_SECTIONS as SECTIONS, sectionSlugs } from "../../../data/en-sections";
 
@@ -12,9 +12,7 @@ const posts = (await getCollection("articlesEn"))
   .filter((p) => p.data.section === section)
   .sort((a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0));
 ---
-<BaseLayout
-  lang="en"
-  dir="ltr"
+<EnLayout
   title={SECTIONS[section] ?? section}
   description={`English guides in ${SECTIONS[section] ?? section}: ${posts.length} articles on Fortelese.`}
 >
@@ -24,15 +22,15 @@ const posts = (await getCollection("articlesEn"))
     <p>{posts.length} articles in this section.</p>
   </section>
   <section class="container">
-    <div class="article-grid">
+    <div class="grid">
       {posts.map((p) => (
-        <article class="article-card">
+        <article class="card">
           <h3><a href={`/en/${p.id}/`}>{p.data.title}</a></h3>
           <p>{p.data.description}</p>
-          <p class="card-meta">{p.data.pubDate?.toISOString().slice(0, 10)}</p>
+          <p class="meta">{p.data.pubDate?.toISOString().slice(0, 10)}</p>
         </article>
       ))}
     </div>
-    <p style="margin-top:2rem"><a class="secondary-button" href="/en/">All English articles</a></p>
+    <p style="margin-top:2rem"><a class="btn" href="/en/">All English articles</a></p>
   </section>
-</BaseLayout>
+</EnLayout>
