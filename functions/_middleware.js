@@ -5,12 +5,20 @@
 
 const CANONICAL_HOST = "www.fortelese.com";
 const APEX_HOST = "fortelese.com";
+const PROD_PAGES_HOST = "fortelese-site.pages.dev";
 
 export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
 
   if (url.hostname === APEX_HOST) {
+    url.hostname = CANONICAL_HOST;
+    return Response.redirect(url.toString(), 301);
+  }
+
+  // 2) اسم الإنتاج على pages.dev → النطاق الرسمي (منع المحتوى المكرر).
+  //    نستثني معاينات النشر <hash>.fortelese-site.pages.dev كي تبقى قابلة للاختبار.
+  if (url.hostname === PROD_PAGES_HOST) {
     url.hostname = CANONICAL_HOST;
     return Response.redirect(url.toString(), 301);
   }

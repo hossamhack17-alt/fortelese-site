@@ -57,3 +57,14 @@
   `best-national-university-saudi` · `mba-guide` · `cybersecurity-courses` · `professional-certifications` · `pmp-courses` · `accounting-courses` · `english-institutes` · `remote-vocational-training`.
 - **قاعدة المحتوى في هذا القسم**: صفحات إرشادية تحليلية (معايير اختيار، أسئلة للمزوّد، أخطاء شائعة، أسئلة شائعة) **بلا ترشيحات مدفوعة وبلا أرقام أو تصنيفات أو رسوم مُختلقة**. أي رقم أو ترتيب أو سعر يحتاج مصدرًا موثقًا قبل نشره.
 - تُحدَّث الصفحات دوريًا لأن لوائح القبول والشهادات تتغير، والتاريخ يُحدَّث في `updatedDate`.
+
+## قيد-10: النطاق مُنتقل إلى Pages (مُعتمد 2026-11-22)
+- `www.fortelese.com` مربوط بمشروع `fortelese-site` وحالته **200**، والشهادة `CN=fortelese.com` صالحة.
+- **سجلات DNS المضافة فقط** (لم يُحذف أي سجل):
+  - `CNAME www → fortelese-site.pages.dev` (proxied)
+  - `CNAME @ → fortelese-site.pages.dev` (proxied, flattened)
+- **لم تُمس** سجلات MX/Email Routing ولا DKIM TXT ولا CNAMEs الفرعية (`ar`, `hilal`, `oxfam`).
+- نسخة احتياطية قبل التغيير: `../DNS-BACKUP-2026-11-22-pre-pages.json`.
+- `fortelese.com` (apex) → 301 إلى `www` عبر `functions/_middleware.js`؛ و`fortelese-site.pages.dev` → 301 إلى `www`.
+  **معاينات النشر** (`<hash>.fortelese-site.pages.dev`) تبقى 200 للاختبار.
+- Blogger ما زال يملك المحتوى الأصلي (blogspot)؛ النطاق لم يكن يُخدم منه وقت النقل (www كان NXDOMAIN).

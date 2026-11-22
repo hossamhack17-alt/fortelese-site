@@ -40,7 +40,7 @@ export XDG_CONFIG_HOME="C:/Users/Administrator/AppData/Roaming/xdg.config"
 npx wrangler pages deploy dist --project-name=fortelese-site --branch=main --commit-dirty=true
 ```
 - المشروع: `fortelese-site` (account `a62a648e…`)، النطاق المخصص لاحقًا: `www.fortelese.com`.
-- `fortelese.com` ما زال على Blogger؛ ربط النطاق خطوة منفصلة.
+- **`www.fortelese.com` = الموقع الإنتاجي الآن** (Cloudflare Pages). apex → 301 إلى www، و`fortelese-site.pages.dev` → 301 إلى www، والمعاينات `<hash>.pages.dev` تبقى 200.
 
 ## قواعد ثابتة
 1. لا تُغيَّر مسارات المقالات المنشورة ولا تُعاد كتابة نصوصها.
