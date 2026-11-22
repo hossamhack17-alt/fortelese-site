@@ -1,10 +1,12 @@
 ---
+import { postPath } from "../lib/urls";
+
 const { article } = Astro.props;
 const date = article.data.pubDate;
 ---
 <article class="article-card">
   <div class="card-meta"><span>{article.data.category}</span>{date && <time datetime={date.toISOString()}>{date.toLocaleDateString("ar")}</time>}</div>
-  <h3><a href={`/articles/${article.id}/`}>{article.data.title}</a></h3>
+  <h3><a href={postPath(article)}>{article.data.title}</a></h3>
   <p>{article.data.description}</p>
-  <a class="read-more" href={`/articles/${article.id}/`}>اقرأ المقال <span aria-hidden="true">←</span></a>
+  <a class="read-more" href={postPath(article)}>اقرأ المقال <span aria-hidden="true">←</span></a>
 </article>

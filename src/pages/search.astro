@@ -1,0 +1,91 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site";
+---
+<BaseLayout title="البحث في طموح" description="ابحث داخل مكتبة طموح عن العبارات والمقالات." canonical={`${site.url}/search.html`} noindex>
+  <section class="page-intro container">
+    <span class="eyebrow">بحث</span>
+    <h1>ابحث داخل مكتبة طموح</h1>
+    <p>اكتب كلمة من عنوان المقال أو موضوعه. النتائج تُطابق العناوين والوصف ونص المقال.</p>
+  </section>
+  <section class="container" style="padding-bottom:80px">
+    <form id="search-form" role="search" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px">
+      <label for="q" style="position:absolute;inset-inline-start:-9999px">كلمة البحث</label>
+      <input id="q" name="q" type="search" autocomplete="off" placeholder="مثال: عبارات عن النجاح"
+        style="flex:1;min-width:240px;padding:13px 16px;border:1px solid #cbd8d0;border-radius:10px;font:inherit" />
+      <button class="primary-button" type="submit">بحث</button>
+    </form>
+    <p id="status" class="eyebrow" aria-live="polite"></p>
+    <ul id="results" style="list-style:none;padding:0;margin:0;display:grid;gap:14px"></ul>
+  </section>
+</BaseLayout>
+
+<script>
+  type Item = { t: string; d: string; u: string; c: string; s: string };
+  const form = document.getElementById("search-form") as HTMLFormElement | null;
+  const input = document.getElementById("q") as HTMLInputElement | null;
+  const results = document.getElementById("results") as HTMLUListElement | null;
+  const status = document.getElementById("status") as HTMLParagraphElement | null;
+  let data: Item[] = [];
+
+  const norm = (s: string) => s.replace(/[\u064B-\u0652]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").toLowerCase();
+
+  async function load() {
+    if (data.length) return data;
+    const res = await fetch("/search-index.json");
+    data = (await res.json()) as Item[];
+    return data;
+  }
+
+  function render(list: Item[], query: string) {
+    if (!results || !status) return;
+    results.innerHTML = "";
+    if (!query) { status.textContent = "أدخل كلمة للبحث."; return; }
+    status.textContent = list.length ? `${list.length} نتيجة` : "لا نتائج مطابقة.";
+    for (const item of list) {
+      const li = document.createElement("li");
+      li.style.cssText = "border:1px solid #e6ebe7;border-radius:12px;padding:16px 18px;background:#fff";
+      const a = document.createElement("a");
+      a.href = item.u;
+      a.textContent = item.t;
+      a.style.cssText = "color:#123d35;font-weight:700;font-size:18px";
+      const p = document.createElement("p");
+      p.textContent = item.d;
+      p.style.cssText = "margin:6px 0 0;color:#657570;font-size:14px";
+      li.append(a, p);
+      results.appendChild(li);
+    }
+  }
+
+  async function run(q: string) {
+    const items = await load();
+    const nq = norm(q.trim());
+    if (!nq) { render([], ""); return; }
+    const words = nq.split(/\s+/).filter(Boolean);
+    const scored = items
+      .map((it) => {
+        const hay = norm(`${it.t} ${it.d} ${it.c} ${it.s}`);
+        let score = 0;
+        for (const w of words) {
+          if (norm(it.t).includes(w)) score += 5;
+          if (norm(it.d).includes(w)) score += 2;
+          if (hay.includes(w)) score += 1;
+        }
+        return { it, score };
+      })
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map((x) => x.it);
+    render(scored, q);
+  }
+
+  const initial = new URLSearchParams(location.search).get("q") ?? "";
+  if (input) input.value = initial;
+  if (initial) run(initial);
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = input?.value ?? "";
+    history.replaceState(null, "", `/search.html?q=${encodeURIComponent(q)}`);
+    run(q);
+  });
+</script>

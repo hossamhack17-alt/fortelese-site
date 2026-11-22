@@ -1,45 +1,37 @@
-# طموح — fortelese.com
+# fortelese-site — موقع طموح (fortelese.com)
 
-مشروع Astro عربي ثابت، مهيأ مبدئيًا للنشر على Cloudflare Pages.
+مشروع Astro ثابت لموقع «طموح» العربي، منشور على Cloudflare Pages.
 
-## المتطلبات
-- Node.js 20.19+ أو 22.12+
-- npm
+## الحالة الحقيقية (محدّثة 2026-11-22)
+- **22 مقالًا مرحّلة** من Blogger إلى `src/content/articles/*.md` (محتوى HTML حرفي من `blogger-export-fortelese.com-2026-11-21.xml`).
+- **الروابط القديمة تُخدَم 200 على مساراتها الأصلية**: `/YYYY/MM/<slug>.html` — لا تحويل 301 للمقالات، لأنها روابط مفهرسة في جوجل.
+- المصدر الوحيد للروابط: `src/lib/urls.ts` (`postPath` / `postParams` / `postUrl`).
+- 38 صفحة في البناء، وsitemap بصيغة `.html`.
+- JSON-LD على كل صفحة: `WebSite` + `SearchAction`، وللمقالات `Article` + `BreadcrumbList`.
+- RSS على `/rss.xml`، وبحث داخلي على `/search` مع `/search-index.json`.
+- PWA: `manifest.webmanifest` + `sw.js` + أيقونات + `og-default.jpg`.
+- خطوط عربية محلية في `public/fonts` (IBM Plex Sans Arabic) — لا طلب إلى Google Fonts.
+- `_headers` (أمان + كاش) و`functions/_middleware.js` (توحيد apex → www وتنظيف الباراميترات).
 
-## التشغيل المحلي
+## الأوامر
 ```bash
 npm install
-npm run dev
+npx astro build                        # ينتج dist/
+node scripts/check-links.mjs dist      # كشف الروابط الداخلية المكسورة
+node scripts/build-brand-assets.mjs    # إعادة توليد الأيقونات والـog
 ```
 
-## فحص البناء
+## النشر (Cloudflare Pages — حساب hossamhack17)
 ```bash
-npm run build
-npm run preview
+export XDG_CONFIG_HOME="C:/Users/Administrator/AppData/Roaming/xdg.config"
+npx wrangler pages deploy dist --project-name=fortelese-site --branch=main --commit-dirty=true
 ```
+- المشروع: `fortelese-site` (account `a62a648e…`)، النطاق المخصص لاحقًا: `www.fortelese.com`.
+- `fortelese.com` ما زال على Blogger؛ ربط النطاق خطوة منفصلة.
 
-## النشر على Cloudflare Pages
-- Framework preset: Astro
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Root directory: `/`
-
-## بنية المحتوى
-- المقالات: `src/content/articles/*.md`
-- التصنيفات: `src/data/site.ts`
-- الصفحات الثابتة: `src/pages/`
-- التحويلات: `public/_redirects`
-
-## حالة النقل الحالية
-هذه حزمة تأسيسية وليست ترحيلًا مكتملًا للموقع. تمت معاينة الصفحة الرئيسية العامة فقط، ولم يتوفر ملف تصدير Blogger أو جرد موثوق لجميع المقالات والصور والروابط. لذلك لا توجد مقالات قديمة منشورة داخل هذا المشروع، ولا توجد تحويلات 301 تخمينية.
-
-## قبل الإطلاق
-1. استيراد ملف Blogger XML وتحويل كل مقال منشور مع الصور والبيانات الوصفية.
-2. تدقيق كل رابط قديم وإنشاء تحويل 301 مطابق.
-3. مراجعة صفحات من نحن، اتصل بنا، الخصوصية والشروط وإكمال بيانات التواصل.
-4. إضافة معرف AdSense الصحيح بعد التحقق من حساب الناشر، وعدم وضع معرف افتراضي.
-5. اختبار الروابط الداخلية، canonical، sitemap، robots، البيانات المنظمة، الهاتف وCore Web Vitals.
-6. إجراء اختبار نشر Preview على Cloudflare Pages قبل تحويل النطاق أو تعديل DNS.
-
-## تنبيه AdSense
-لا تعتبر صفحة سياسة الخصوصية الحالية نهائية؛ يجب تعديلها لتعكس الخدمات الفعلية ووسائل جمع البيانات والإعلانات المستخدمة بعد إعداد الموقع.
+## قواعد ثابتة
+1. لا تُغيَّر مسارات المقالات المنشورة ولا تُعاد كتابة نصوصها.
+2. لا محتوى مُختلق ولا بيانات منظمة عن كيانات أو أشخاص غير موجودين.
+3. التصميم الحالي معتمد من المالك — لا تغييرات بصرية بدون طلب صريح.
+4. `ads.txt` بلا معرّف ناشر حتى يُؤكَّد حساب AdSense الخاص بهذا الموقع.
+5. القرارات الملزمة كلها في `DECISIONS.md`.

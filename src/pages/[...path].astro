@@ -1,12 +1,14 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import ArticleCard from "../../components/ArticleCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ArticleCard from "../components/ArticleCard.astro";
 import { getCollection, render } from "astro:content";
+import { postPath, postParams, postUrl } from "../lib/urls";
+import { site } from "../data/site";
 
 export async function getStaticPaths() {
   const articles = await getCollection("articles", ({ data }) => !data.draft);
   return articles.map((article) => ({
-    params: { slug: article.id },
+    params: { path: postParams(article) },
     props: { article }
   }));
 }
@@ -37,7 +39,7 @@ const plainText = rawBody
 const wordCount = plainText ? plainText.split(" ").length : 0;
 const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
-const canonical = new URL(`/articles/${article.id}/`, Astro.site ?? "https://www.fortelese.com").toString();
+const canonical = postUrl(article);
 const shareText = `${article.data.title} ${canonical}`;
 const dateLabel = article.data.pubDate
   ? article.data.pubDate.toLocaleDateString("ar")
@@ -46,14 +48,53 @@ const dateLabel = article.data.pubDate
 const breadcrumbItems = [
   { label: "الرئيسية", url: "/" },
   { label: article.data.category, url: `/categories/${article.data.categorySlug}/` },
-  { label: article.data.title, url: `/articles/${article.id}/` }
+  { label: article.data.title, url: postPath(article) }
 ];
+
+
+const articleSchema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.data.title,
+    description: article.data.description,
+    inLanguage: "ar",
+    url: canonical,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+    datePublished: article.data.pubDate ? article.data.pubDate.toISOString() : undefined,
+    dateModified: (article.data.updatedDate ?? article.data.pubDate)
+      ? (article.data.updatedDate ?? article.data.pubDate).toISOString()
+      : undefined,
+    articleSection: article.data.category,
+    keywords: (article.data.tags ?? []).join(", ") || undefined,
+    wordCount,
+    author: {
+      "@type": "Organization",
+      name: article.data.author ?? "فريق طموح",
+      url: site.url + "/about/"
+    },
+    publisher: { "@type": "Organization", name: site.name, url: site.url }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbItems.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.label,
+      item: new URL(item.url, site.url).toString()
+    }))
+  }
+];
+
 ---
 
 <BaseLayout
   title={article.data.title}
   description={article.data.description}
   canonical={canonical}
+  type="article"
+  schema={articleSchema}
 >
   <article class="container article-page article-reading-page">
     <nav class="article-breadcrumbs" aria-label="مسار التنقل">

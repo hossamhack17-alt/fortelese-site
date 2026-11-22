@@ -1,23 +1,5 @@
-# Legacy Blogger URLs -> new Astro routes (301). Generated from the exported entries; paths preserved verbatim.
-/2025/01/beautiful-short-phrases-about-success.html  /articles/beautiful-short-phrases-about-success/  301
-/2025/01/beautiful-short-phrases-for-the-soul.html  /articles/beautiful-short-phrases-for-the-soul/  301
-/2025/01/beautiful-words-about-hajj.html  /articles/beautiful-words-about-hajj/  301
-/2025/01/best-arabic-sayings-about-life-people-relationships-wisdom.html  /articles/best-arabic-sayings-about-life-people-relationships-wisdom/  301
-/2025/01/blog-post_16.html  /articles/blog-post_16/  301
-/2025/01/blog-post_22.html  /articles/blog-post_22/  301
-/2025/01/blog-post_25.html  /articles/blog-post_25/  301
-/2025/01/blog-post_52.html  /articles/blog-post_52/  301
-/2025/01/blog-post_63.html  /articles/blog-post_63/  301
-/2025/01/body-font-family-arial-sans-serif-line.html  /articles/body-font-family-arial-sans-serif-line/  301
-/2025/01/body-font-family-arial-sans-serif-line_25.html  /articles/body-font-family-arial-sans-serif-line_25/  301
-/2025/01/details-of-death-of-thaer-shamel.html  /articles/details-of-death-of-thaer-shamel/  301
-/2025/01/heart-mail-6-letters.html  /articles/heart-mail-6-letters/  301
-/2025/01/hijab-slogan-ideas.html  /articles/hijab-slogan-ideas/  301
-/2025/01/love-buster-movie-subtitled-watch-for.html  /articles/love-buster-movie-subtitled-watch-for/  301
-/2025/01/on-wail-and-simsema-words.html  /articles/on-wail-and-simsema-words/  301
-/2025/01/phrases-about-personal-strength.html  /articles/phrases-about-personal-strength/  301
-/2025/01/powerful-motivational-quotes-for-success.html  /articles/powerful-motivational-quotes-for-success/  301
-/2025/01/short-impactful-wisdom-sayings-life-lessons-guide.html  /articles/short-impactful-wisdom-sayings-life-lessons-guide/  301
-/2025/01/siprogut-0-3-why-it-is-used.html  /articles/siprogut-0-3-why-it-is-used/  301
-/2025/01/timeless-self-quotes-wisdom-personal.html  /articles/timeless-self-quotes-wisdom-personal/  301
-/2025/01/wisdom-dictionary-classical-colloquial-life-guide.html  /articles/wisdom-dictionary-classical-colloquial-life-guide/  301
+# المقالات تُخدَم 200 على مسارات Blogger الأصلية /YYYY/MM/<slug>.html — لا تحويلات.
+# تُضاف هنا فقط قواعد 301/410 للصفحات الثابتة القديمة أو المسارات الميتة.
+
+/%D8%B9%D8%A8%D8%A7%D8%B1%D8%A7%D8%AA-%D8%AA%D8%AD%D9%81%D9%8A%D8%B2%D9%8A%D8%A9  /categories/phrases.html  301
+/%D8%A3%D9%85%D8%AB%D8%A7%D9%84-%D8%B4%D8%B9%D8%A8%D9%8A%D8%A9  /categories/knowledge.html  301

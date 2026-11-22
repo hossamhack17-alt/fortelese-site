@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleCard from "../components/ArticleCard.astro";
 import { categories } from "../data/site";
+import { postPath } from "../lib/urls";
 import { getCollection } from "astro:content";
 
 const allArticles = (await getCollection("articles", ({ data }) => !data.draft))
@@ -57,7 +58,7 @@ const existingSections = primarySections.map((section) => ({
       </div>
 
       {featured && (
-        <a class="featured-story" href={`/articles/${featured.id}/`}>
+        <a class="featured-story" href={postPath(featured)}>
           <span class="featured-label">موضوعنا المميز</span>
           <span class="featured-category">{featured.data.category}</span>
           <h2>{featured.data.title}</h2>
@@ -133,7 +134,7 @@ const existingSections = primarySections.map((section) => ({
     {selected.length > 0 ? (
       <div class="curated-list">
         {selected.map((article, index) => (
-          <a class="curated-item" href={`/articles/${article.id}/`}>
+          <a class="curated-item" href={postPath(article)}>
             <span class="curated-index">0{index + 1}</span>
             <span class="curated-content">
               <span class="curated-category">{article.data.category}</span>

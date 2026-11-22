@@ -1,0 +1,3 @@
+# ads.txt — طموح (fortelese.com)
+# أضف سطر الناشر بعد التأكد من ربط الموقع بحساب AdSense نفسه:
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

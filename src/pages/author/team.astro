@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "فريق تحرير طموح",
+    url: `${site.url}/author/team.html`,
+    inLanguage: "ar"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "الرئيسية", item: `${site.url}/` },
+      { "@type": "ListItem", position: 2, name: "فريق التحرير", item: `${site.url}/author/team.html` }
+    ]
+  }
+];
+---
+<BaseLayout title="فريق تحرير طموح" description="من يقف خلف موقع طموح، وكيف نكتب ونراجع المحتوى." canonical={`${site.url}/author/team.html`} schema={schema}>
+  <section class="page-intro container">
+    <span class="eyebrow">عن المحتوى</span>
+    <h1>فريق تحرير طموح</h1>
+    <p>موقع طموح منصة عربية مستقلة تُعنى بالعبارات والمعرفة والحياة اليومية. نكتب ونراجع كل صفحة داخل فريق تحرير واحد، دون أسماء مستعارة أو نسب محتوى إلى أشخاص غير موجودين.</p>
+  </section>
+  <section class="container static-prose">
+    <h2>كيف نكتب</h2>
+    <p>كل مقال يبدأ من سؤال يبحث عنه القارئ فعلًا. نجمع العبارات والمادة من الاستخدام العربي الشائع، ونعيد صياغتها وتنظيمها داخل صفحات واضحة، ثم نراجع العنوان والوصف والتصنيف قبل النشر.</p>
+    <h2>كيف نراجع</h2>
+    <p>نراجع كل صفحة من ثلاثة أوجه: دقة المعلومة، سلامة اللغة، وقابلية الاستخدام على الجوال. ونحدّث الصفحات القديمة عند تغيّر المعلومة، دون تغيير مسارها المنشور.</p>
+    <h2>ما لا نفعله</h2>
+    <ul>
+      <li>لا ننشر بيانات شخصية أو تقييمات أو شهادات غير موثقة.</li>
+      <li>لا ننسب نصوصًا إلى كتّاب لم نتحقق من صلتهم بها.</li>
+      <li>لا نستخدم أسماء أشخاص حقيقيين كمؤلفين لمواد لم يكتبوها.</li>
+    </ul>
+    <h2>التواصل</h2>
+    <p>لأي ملاحظة أو تصحيح، راجع صفحة <a href="/contact/">اتصل بنا</a>. ولتفاصيل السياسة التحريرية كاملةً اقرأ <a href="/editorial-policy/">سياستنا التحريرية</a>.</p>
+  </section>
+</BaseLayout>
