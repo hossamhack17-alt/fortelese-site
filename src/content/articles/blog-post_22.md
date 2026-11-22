@@ -9,9 +9,9 @@ tags: ["عبارات"]
 draft: false
 featuredImage: "/images/blog-post_22/1.webp"
 gallery:
-  - "/images/blog-post_22/2.webp"
-  - "/images/blog-post_22/3.webp"
-  - "/images/blog-post_22/4.webp"
+ - "/images/blog-post_22/2.webp"
+ - "/images/blog-post_22/3.webp"
+ - "/images/blog-post_22/4.webp"
 oldUrl: "https://www.fortelese.com/2025/01/blog-post_22.html"
 author: "فريق طموح"
 ---

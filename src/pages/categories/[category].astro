@@ -9,7 +9,10 @@ export function getStaticPaths() {
 const { category } = Astro.props;
 const articles = await getCollection("articles", ({ data }) => !data.draft && data.categorySlug === category.slug);
 ---
-<BaseLayout title={category.title} description={category.description}>
+<BaseLayout
+  title={`${category.title} | مقالات`}
+  description={`${category.description} مقالات مراجعة ومنظمة مع فهرس داخل الصفحة وروابط لموضوعات ذات صلة.`}
+>
   <section class="page-intro container"><a class="back-link" href="/categories/">← جميع التصنيفات</a><span class="eyebrow">تصنيف</span><h1>{category.title}</h1><p>{category.description}</p></section>
   <section class="container section">
     {articles.length ? <div class="article-grid">{articles.map((article) => <ArticleCard article={article} />)}</div> : <div class="empty-state"><h2>سيُضاف المحتوى قريبًا</h2><p>هذا القسم جاهز، وتُستكمل مقالته بعد استيراد محتوى Blogger والتحقق من الروابط القديمة.</p></div>}
