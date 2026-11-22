@@ -1,6 +1,6 @@
 // Service worker — طموح: شبكة أولًا للصفحات، وكاش للأصول الثابتة.
 const CACHE = "tamouh-v1";
-const PRECACHE = ["/", "/manifest.webmanifest", "/favicon.png"];
+const PRECACHE = ["/", "/manifest.webmanifest", "/favicon.png", "/offline"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
@@ -42,7 +42,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
           return res;
         })
-        .catch(() => caches.match(req).then((hit) => hit || caches.match("/")))
+        .catch(() => caches.match(req).then((hit) => hit || caches.match("/offline") || caches.match("/")))
     );
   }
 });

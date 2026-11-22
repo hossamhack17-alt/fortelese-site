@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site";
+---
+<BaseLayout title="لا يوجد اتصال" description="تعذّر الاتصال بالإنترنت. يمكنك متابعة ما حُمّل سابقًا." canonical={`${site.url}/offline.html`} noindex>
+  <section class="page-intro container">
+    <span class="eyebrow">بلا اتصال</span>
+    <h1>الصفحة غير متاحة دون إنترنت</h1>
+    <p>أنت تستخدم تطبيق «طموح» بدون شبكة. الصفحات التي زرتها سابقًا ما زالت محفوظة في جهازك.</p>
+    <p style="margin-top:22px">
+      <a class="primary-button" href="/">المحاولة من الرئيسية</a>
+      <a class="secondary-button" href="/categories/" style="margin-inline-start:8px">الأقسام</a>
+    </p>
+  </section>
+</BaseLayout>
