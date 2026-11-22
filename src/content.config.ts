@@ -14,6 +14,7 @@ const articles = defineCollection({
     draft: z.boolean().default(false),
     oldUrl: z.string().url().optional(),
     featuredImage: z.string().optional(),
+    gallery: z.array(z.string()).optional(),
     author: z.string().default("فريق طموح")
   })
 });

@@ -1,0 +1,4 @@
+Contact: https://www.fortelese.com/contact.html
+Expires: 2027-12-31T23:59:00.000Z
+Preferred-Languages: ar, en
+Canonical: https://www.fortelese.com/.well-known/security.txt

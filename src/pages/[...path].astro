@@ -195,6 +195,16 @@ const articleSchema = [
         </div>
       </div>
     </div>
+
+    {article.data.gallery && article.data.gallery.length > 0 && (
+      <section class="article-gallery" aria-label="صور من المقال">
+        {article.data.gallery.map((src, i) => (
+          <figure>
+            <img src={src} alt={`${article.data.title} — صورة توضيحية ${i + 1}`} width="1200" height="675" loading="lazy" decoding="async" />
+          </figure>
+        ))}
+      </section>
+    )}
   </article>
 
   {related.length > 0 && (

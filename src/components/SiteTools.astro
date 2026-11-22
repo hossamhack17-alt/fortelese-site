@@ -296,9 +296,12 @@
     docHeight = el.scrollHeight;
     viewHeight = el.clientHeight;
   };
-  measure();
-  addEventListener("resize", measure, { passive: true });
-  addEventListener("load", measure, { once: true });
+  // لا قياس متزامن بعد الكتابة على الأنماط: نؤجّله إلى أول إطار رسم (rAF)
+  // حتى لا يقع forced reflow داخل مسار التحميل.
+  const measureSoon = () => requestAnimationFrame(measure);
+  addEventListener("resize", measureSoon, { passive: true });
+  addEventListener("load", measureSoon, { once: true });
+  measureSoon();
 
   let ticking = false;
   const onScroll = () => {
@@ -313,5 +316,5 @@
     });
   };
   addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+  requestAnimationFrame(measure);
 </script>

@@ -80,6 +80,14 @@ const allSchema = [...baseSchema, ...schema];
         <small>© {new Date().getFullYear()} طموح. جميع الحقوق محفوظة.</small>
       </div>
     </footer>
+    <script type="speculationrules" is:inline>
+      {
+        "prerender": [{
+          "where": { "href_matches": "/*" },
+          "eagerness": "moderate"
+        }]
+      }
+    </script>
     <script is:inline>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {

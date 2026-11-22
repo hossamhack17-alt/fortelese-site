@@ -84,3 +84,9 @@ html[data-theme="dark"] .article-breadcrumbs,html[data-theme="dark"] .back-link{
 .article-cover{margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#fff}
 .article-cover img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
 html[data-theme="dark"] .article-cover{border-color:#243a33;background:#152823}
+
+/* معرض صور المقال */
+.article-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:34px}
+.article-gallery figure{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.article-gallery img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+html[data-theme="dark"] .article-gallery figure{border-color:#243a33;background:#152823}
