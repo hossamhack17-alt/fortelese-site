@@ -1,5 +1,43 @@
-# المقالات تُخدَم 200 على مسارات Blogger الأصلية /YYYY/MM/<slug>.html — لا تحويلات.
-# تُضاف هنا فقط قواعد 301/410 للصفحات الثابتة القديمة أو المسارات الميتة.
+# Cloudflare Pages يحذف امتداد .html بـ 308 — لذلك نُظهر كل ملف .html كـ 200 على مساره الأصلي.
+# (مطلوب: روابط Blogger المفهرسة تبقى 200 بامتدادها)
+
+/2025/01/beautiful-short-phrases-about-success.html  /2025/01/beautiful-short-phrases-about-success  200
+/2025/01/beautiful-short-phrases-for-the-soul.html  /2025/01/beautiful-short-phrases-for-the-soul  200
+/2025/01/beautiful-words-about-hajj.html  /2025/01/beautiful-words-about-hajj  200
+/2025/01/best-arabic-sayings-about-life-people-relationships-wisdom.html  /2025/01/best-arabic-sayings-about-life-people-relationships-wisdom  200
+/2025/01/blog-post_16.html  /2025/01/blog-post_16  200
+/2025/01/blog-post_22.html  /2025/01/blog-post_22  200
+/2025/01/blog-post_25.html  /2025/01/blog-post_25  200
+/2025/01/blog-post_52.html  /2025/01/blog-post_52  200
+/2025/01/blog-post_63.html  /2025/01/blog-post_63  200
+/2025/01/body-font-family-arial-sans-serif-line.html  /2025/01/body-font-family-arial-sans-serif-line  200
+/2025/01/body-font-family-arial-sans-serif-line_25.html  /2025/01/body-font-family-arial-sans-serif-line_25  200
+/2025/01/details-of-death-of-thaer-shamel.html  /2025/01/details-of-death-of-thaer-shamel  200
+/2025/01/heart-mail-6-letters.html  /2025/01/heart-mail-6-letters  200
+/2025/01/hijab-slogan-ideas.html  /2025/01/hijab-slogan-ideas  200
+/2025/01/love-buster-movie-subtitled-watch-for.html  /2025/01/love-buster-movie-subtitled-watch-for  200
+/2025/01/on-wail-and-simsema-words.html  /2025/01/on-wail-and-simsema-words  200
+/2025/01/phrases-about-personal-strength.html  /2025/01/phrases-about-personal-strength  200
+/2025/01/powerful-motivational-quotes-for-success.html  /2025/01/powerful-motivational-quotes-for-success  200
+/2025/01/short-impactful-wisdom-sayings-life-lessons-guide.html  /2025/01/short-impactful-wisdom-sayings-life-lessons-guide  200
+/2025/01/siprogut-0-3-why-it-is-used.html  /2025/01/siprogut-0-3-why-it-is-used  200
+/2025/01/timeless-self-quotes-wisdom-personal.html  /2025/01/timeless-self-quotes-wisdom-personal  200
+/2025/01/wisdom-dictionary-classical-colloquial-life-guide.html  /2025/01/wisdom-dictionary-classical-colloquial-life-guide  200
+/404.html  /404  200
+/about.html  /about  200
+/author/team.html  /author/team  200
+/categories.html  /categories  200
+/categories/faith.html  /categories/faith  200
+/categories/family.html  /categories/family  200
+/categories/knowledge.html  /categories/knowledge  200
+/categories/phrases.html  /categories/phrases  200
+/categories/puzzles.html  /categories/puzzles  200
+/categories/self-development.html  /categories/self-development  200
+/contact.html  /contact  200
+/editorial-policy.html  /editorial-policy  200
+/privacy.html  /privacy  200
+/search.html  /search  200
+/terms.html  /terms  200
 
 /%D8%B9%D8%A8%D8%A7%D8%B1%D8%A7%D8%AA-%D8%AA%D8%AD%D9%81%D9%8A%D8%B2%D9%8A%D8%A9  /categories/phrases.html  301
 /%D8%A3%D9%85%D8%AB%D8%A7%D9%84-%D8%B4%D8%B9%D8%A8%D9%8A%D8%A9  /categories/knowledge.html  301
