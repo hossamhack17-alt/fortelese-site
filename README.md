@@ -32,6 +32,7 @@ node scripts/check-links.mjs dist      # كشف الروابط الداخلية 
 node scripts/build-brand-assets.mjs    # إعادة توليد الأيقونات والـog
 node scripts/build-article-images.mjs  # صور المقالات (SVG → webp)
 python scripts/gen_html_proxies.py dist public/_redirects   # 200-proxies بعد كل بناء
+node scripts/build-csp.mjs dist        # يولّد CSP بـ hashes + COOP في dist/_headers
 ```
 
 ## النشر (Cloudflare Pages — حساب hossamhack17)

@@ -194,7 +194,7 @@
   async function runSearch(q: string) {
     if (!results || !status) return;
     const nq = norm(q.trim());
-    results.innerHTML = "";
+    results.replaceChildren();
     if (!nq) { status.textContent = ""; return; }
     const items = await loadIndex();
     const words = nq.split(/\s+/).filter(Boolean);
