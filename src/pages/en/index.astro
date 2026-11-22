@@ -1,7 +1,6 @@
 ---
 import EnLayout from "../../layouts/EnLayout.astro";
 import { getCollection } from "astro:content";
-
 import { EN_SECTIONS as SECTIONS } from "../../data/en-sections";
 
 const posts = (await getCollection("articlesEn", ({ data }) => !data.draft)).sort(
@@ -15,41 +14,63 @@ const groups = Object.keys(SECTIONS)
     posts: posts.filter((p) => (p.data.section ?? "online-mba") === slug),
   }))
   .filter((g) => g.posts.length > 0);
+
+const featured = posts[0];
+const rest = posts.slice(1, 10);
+const words = posts.reduce((n, p) => n + (p.body ?? "").replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length, 0);
 ---
 <EnLayout
-  title="English Articles"
-  description="English-language guides from Fortelese: online MBA programs, career development and practical education explainers."
+  title="English articles"
+  description="Long-form English guides on online MBA programs, executive careers and crypto markets — organised by topic, with sources and original dates."
 >
-  <section class="page-intro container">
-    <span class="eyebrow">English section</span>
-    <h1>English Articles</h1>
-    <p>{posts.length} long-form guides, organised by topic. Each page keeps its original publication date and a link to where it first appeared.</p>
-    <p class="meta">
-      {groups.map((g) => (
-        <a href={`/en/sections/${g.slug}/`} style="margin-inline-end:1rem">{g.title} ({g.posts.length})</a>
-      ))}
-    </p>
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="eyebrow">Fortelese · English edition</p>
+        <h1>Guides that respect <em>your time and your money</em>.</h1>
+        <p class="lead">Every article is a long-form explainer: what a program actually costs, what it requires, how to compare two options, and which questions to ask before you commit. No sponsored rankings, no invented statistics.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>{posts.length}</b><span>articles</span></div>
+        <div class="stat"><b>{groups.length}</b><span>sections</span></div>
+        <div class="stat"><b>{Math.round(words / 1000)}k+</b><span>words</span></div>
+      </div>
+    </div>
   </section>
 
-  {groups.map((g) => (
-    <section class="container" style="margin-bottom:3rem">
-      <div class="section-head"><h2>{g.title}</h2><a href={`/en/sections/${g.slug}/`}>View section →</a></div>
-      <div class="grid">
-        {g.posts.map((p) => (
-          <article class="card">
-            <h3><a href={`/en/${p.id}/`}>{p.data.title}</a></h3>
-            <p>{p.data.description}</p>
-            <p class="meta">
-              {p.data.pubDate?.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}
-              {p.data.originalUrl && <> · <a href={p.data.originalUrl} rel="nofollow noopener" target="_blank">original</a></>}
-            </p>
-          </article>
-        ))}
-      </div>
+  {featured && (
+    <section style="margin-bottom:2.6rem">
+      <p class="eyebrow">Latest</p>
+      <h2 style="margin-top:.2rem"><a href={`/en/${featured.id}/`} style="text-decoration:none;color:inherit">{featured.data.title}</a></h2>
+      <p class="lead">{featured.data.description}</p>
+      <p class="meta">{featured.data.pubDate?.toISOString().slice(0, 10)} · <a href={`/en/${featured.id}/`}>Read the guide →</a></p>
     </section>
-  ))}
+  )}
 
-  <section class="container" style="margin-bottom:3rem">
-    <p><a class="btn" href="/">← Back to the Arabic site</a> <a class="btn" href="/oxfam/">Oxfam archive index</a></p>
+  <section style="margin-bottom:2.6rem">
+    <p class="eyebrow">Sections</p>
+    <div class="grid">
+      {groups.map((g) => (
+        <article class="card">
+          <h3><a href={`/en/sections/${g.slug}/`}>{g.title}</a></h3>
+          <p>{g.posts.length} articles · updated {g.posts[0]?.data.pubDate?.toISOString().slice(0, 10)}</p>
+          <p class="meta"><a href={`/en/sections/${g.slug}/`}>Browse section →</a></p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Recent articles</p>
+    <div class="grid">
+      {rest.map((p) => (
+        <article class="card">
+          <h3><a href={`/en/${p.id}/`}>{p.data.title}</a></h3>
+          <p>{p.data.description}</p>
+          <p class="meta">{p.data.pubDate?.toISOString().slice(0, 10)}</p>
+        </article>
+      ))}
+    </div>
+    <p style="margin-top:2rem"><a class="btn btn-solid" href="/en/sections/online-mba">Start with Online MBA →</a> <a class="btn" href="/">العربية</a></p>
   </section>
 </EnLayout>

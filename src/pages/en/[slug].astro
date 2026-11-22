@@ -9,22 +9,46 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props as { post: CollectionEntry<"articlesEn"> };
 const date = post.data.pubDate?.toISOString().slice(0, 10);
-const words = post.body?.replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length ?? 0;
+const text = (post.body ?? "").replace(/<[^>]+>/g, " ");
+const words = text.split(/\s+/).filter(Boolean).length;
+
+const headings = [...(post.body ?? "").matchAll(/<h2[^>]*id="([^"]*)"[^>]*>([\s\S]*?)<\/h2>/gi)]
+  .map((m) => ({ id: m[1], title: m[2].replace(/<[^>]+>/g, "").trim() }));
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate?.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate)?.toISOString(),
+  inLanguage: "en",
+  author: { "@type": "Organization", name: post.data.author },
+  publisher: { "@type": "Organization", name: "Fortelese" },
+  mainEntityOfPage: `https://www.fortelese.com/en/${post.id}`,
+};
 ---
-<EnLayout
-  title={post.data.title}
-  description={post.data.description}
-  type="article"
->
-  <article class="container prose article-body">
-    <p class="eyebrow"><a href="/en/">English</a> · {post.data.category}</p>
-    <h1>{post.data.title}</h1>
-    <p class="meta">
-      {date} · {Math.round(words / 200)} min read · {post.data.author}
-      {post.data.originalUrl && <> · <a href={post.data.originalUrl} rel="nofollow noopener" target="_blank">first published here</a></>}
-    </p>
-    <div set:html={post.body} />
+<EnLayout title={post.data.title} description={post.data.description} type="article" jsonld={articleJsonLd}>
+  <article>
+    <header class="article-head">
+      <p class="eyebrow"><a href="/en">English</a> · <a href={`/en/sections/${post.data.section ?? "online-mba"}`}>{post.data.category}</a></p>
+      <h1>{post.data.title}</h1>
+      <p class="meta">
+        {date} · {Math.max(1, Math.round(words / 220))} min read · {post.data.author}
+        {post.data.originalUrl && <> · <a href={post.data.originalUrl} rel="nofollow noopener" target="_blank">first published here</a></>}
+      </p>
+    </header>
+
+    {headings.length > 2 && (
+      <nav class="toc" aria-label="On this page">
+        <p>On this page</p>
+        <ol>{headings.map((h) => <li><a href={`#${h.id}`}>{h.title}</a></li>)}</ol>
+      </nav>
+    )}
+
+    <div class="prose" set:html={post.body} />
+
     <hr />
-    <p><a href="/en/">← All English articles</a> · <a href="/">الموقع العربي</a></p>
+    <p><a class="btn" href="/en">← All English articles</a> <a class="btn" href="/">العربية</a></p>
   </article>
 </EnLayout>

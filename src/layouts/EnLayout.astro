@@ -6,8 +6,14 @@ interface Props {
   title?: string;
   description?: string;
   type?: string;
+  jsonld?: object;
 }
-const { title, description = "English guides on online education, careers and markets.", type = "website" } = Astro.props;
+const {
+  title,
+  description = "English guides on online education, careers and markets — from Fortelese.",
+  type = "website",
+  jsonld,
+} = Astro.props;
 const pageTitle = title ? `${title} | Fortelese` : "Fortelese — English";
 const canonical = new URL(Astro.url.pathname, site.url).toString();
 
@@ -16,7 +22,7 @@ const nav = [
   { href: "/en/sections/online-mba", label: "Online MBA" },
   { href: "/en/sections/executive-career", label: "Careers" },
   { href: "/en/sections/crypto", label: "Markets" },
-  { href: "/oxfam", label: "Archive" },
+  { href: "/oxfam", label: "Oxfam" },
 ];
 ---
 <!doctype html>
@@ -27,6 +33,12 @@ const nav = [
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+    <meta property="og:image" content="https://www.fortelese.com/og-default.jpg" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <link rel="alternate" hreflang="x-default" href="https://www.fortelese.com/" />
+    <link rel="alternate" type="application/rss+xml" title="Fortelese English" href="/en/rss.xml" />
     <meta property="og:type" content={type} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -37,13 +49,10 @@ const nav = [
     <link rel="alternate" hreflang="en" href={canonical} />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "Fortelese",
-      url: "https://www.fortelese.com/en",
-      inLanguage: "en",
-    })} />
+    <script type="application/ld+json" set:html={JSON.stringify([
+      { "@context": "https://schema.org", "@type": "WebSite", name: "Fortelese", url: "https://www.fortelese.com/en", inLanguage: "en" },
+      ...(jsonld ? [jsonld] : []),
+    ])} />
     <style>
       :root { color-scheme: light; }
       body.en { margin: 0; background: #fff; color: #14211d; font-family: ui-sans-serif, system-ui, "Segoe UI", Arial, sans-serif; line-height: 1.65; }
@@ -79,10 +88,32 @@ const nav = [
       .btn:hover { background: #f2f7f3; }
       .skip { position: absolute; left: -9999px; }
       .skip:focus { left: 1rem; top: 1rem; background: #fff; padding: 0.5rem 1rem; border: 1px solid #123d35; z-index: 99; }
+      .progress { position: fixed; top: 0; left: 0; height: 3px; background: #1d6556; width: 0; z-index: 40; }
+      .lead { font-size: 1.08rem; color: #33463f; }
+      .hero { background: linear-gradient(160deg, #f4f8f5, #eef5f0 70%, #eaf3ec); border-bottom: 1px solid #e5eae6; padding: 3.2rem 0 2.8rem; margin-bottom: 2.6rem; }
+      .hero-inner { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(240px, 1fr); gap: 2.5rem; align-items: end; }
+      .hero h1 { font-size: clamp(2rem, 4vw, 3.1rem); max-width: 20ch; }
+      @media (max-width: 820px) { .hero-inner { grid-template-columns: 1fr; gap: 1.4rem; } .hero h1 { max-width: none; } }
+      .hero h1 em { color: #1d6556; font-style: normal; }
+      .stat-row { display: grid; gap: 0.9rem; }
+      .stat { display: flex; align-items: baseline; gap: 0.5rem; border-bottom: 1px solid #dfe8e2; padding-bottom: 0.6rem; }
+      .stat b { font-size: 1.6rem; color: #123d35; line-height: 1; }
+      .stat span { font-size: 0.8rem; color: #6b8078; text-transform: uppercase; letter-spacing: 0.08em; }
+      .toc { border: 1px solid #e5eae6; border-radius: 14px; padding: 1rem 1.2rem; background: #f4f8f5; margin: 1.6rem 0; }
+      .toc p { margin: 0 0 0.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: #6b8078; }
+      .toc ol { margin: 0; padding-inline-start: 1.1rem; }
+      .toc li { margin-bottom: 0.3rem; font-size: 0.94rem; }
+      .article-head { border-bottom: 1px solid #e5eae6; padding-bottom: 1.4rem; margin-bottom: 1.8rem; }
+      .prose ul, .prose ol { padding-inline-start: 1.3rem; }
+      .prose li { margin-bottom: 0.5rem; }
+      .prose hr { border: 0; border-top: 1px solid #e5eae6; margin: 2rem 0; }
+      .btn-solid { background: #123d35; color: #fff; border-color: #123d35; }
+      .btn-solid:hover { background: #1d6556; color: #fff; }
     </style>
   </head>
   <body class="en">
     <a class="skip" href="#main">Skip to content</a>
+    <div class="progress" id="progress" aria-hidden="true"></div>
     <header class="en-header">
       <div class="en-wrap">
         <a class="en-brand" href="/en">Fortelese</a>
@@ -98,8 +129,11 @@ const nav = [
     <footer class="en-footer">
       <div class="en-wrap">
         <p>Fortelese — English edition. Editorial guides on online education, careers and markets.</p>
-        <p><a href="/en">All articles</a> · <a href="/oxfam">Archive index</a> · <a href="/">العربية</a></p>
+        <p><a href="/en">All articles</a> · <a href="/en/sections/online-mba">Online MBA</a> · <a href="/en/sections/executive-career">Careers</a> · <a href="/en/sections/crypto">Markets</a> · <a href="/en/rss.xml">RSS</a> · <a href="/">العربية</a></p>
       </div>
     </footer>
+    <script is:inline>
+      (function(){var b=document.getElementById("progress");if(!b)return;function u(){var h=document.documentElement,m=h.scrollHeight-h.clientHeight;b.style.width=(m>0?(h.scrollTop/m)*100:0)+"%";}addEventListener("scroll",u,{passive:true});addEventListener("resize",u);u();})();
+    </script>
   </body>
 </html>
