@@ -3,8 +3,8 @@ title: "أقوال مأثورة عن النفس: دليل شامل لفن فهم
 description: "مقدمة: أهمية الأقوال المأثورة في تعزيز النفس النفس البشرية كنز لا يُقدر بثمن، وفهمها هو أحد مفاتيح النجاح والسعادة في الحياة. الأقوال المأثورة عن النفس تعد…"
 pubDate: 2025-01-23T06:33:00.000-08:00
 updatedDate: 2025-01-23T06:49:44.030-08:00
-category: "عبارات وكلمات"
-categorySlug: phrases
+category: "النجاح وتطوير الذات"
+categorySlug: self-development
 tags: ["عبارات"]
 draft: false
 oldUrl: "https://www.fortelese.com/2025/01/timeless-self-quotes-wisdom-personal.html"
@@ -111,4 +111,3 @@ author: "فريق طموح"
 <h2>خاتمة: تأثير الأقوال المأثورة على النفس</h2>
 <p>تُظهر الأقوال المأثورة عن النفس قوة كلمات الحكماء وتأثيرها الإيجابي العميق على الفرد. سواء كنت تبحث عن الإلهام أو تسعى لتطوير ذاتك، فإن هذه الأقوال هي زادك في رحلتك نحو تحقيق التوازن النفسي والنجاح في الحياة.</p>
 
-<! -- Suggested English URL: self-motivational-quotes --><div class="blogger-post-footer">http://best-10-products.blogspot.com/</div>

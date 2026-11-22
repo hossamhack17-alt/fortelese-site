@@ -19,4 +19,3 @@ author: "فريق طموح"
  strong { color: #e74c3c; }
  em { color: #27ae60; }
  </style>
-<div class="blogger-post-footer">http://best-10-products.blogspot.com/</div>

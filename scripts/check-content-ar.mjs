@@ -108,7 +108,7 @@ for (const f of files) {
     add(f, "SPACE_BEFORE_PUNCT", `${beforePunct} موضعًا بمسافة قبل علامة ترقيم`);
     if (FIX) fixed = fixed.replace(/\s+([،؛؟!])/g, "$1");
   }
-  const noSpaceAfter = (text.match(/[،؛؟!](?=[^\s،؛؟!])/g) || []).length;
+  const noSpaceAfter = (text.match(/[،؛؟!](?=[ء-ي])/g) || []).length;
   if (noSpaceAfter) {
     add(f, "NO_SPACE_AFTER_PUNCT", `${noSpaceAfter} موضعًا بلا مسافة بعد الترقيم`);
     if (FIX) fixed = fixed.replace(/([،؛؟!])(?=[^\s<،؛؟!])/g, "$1 ");
