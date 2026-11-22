@@ -112,11 +112,30 @@
     })
   );
 
+  const NAMES: Record<string, string> = {
+    green: "الأخضر", teal: "التركوازي", ink: "الكحلي", amber: "العنبري", plum: "البنفسجي"
+  };
+  let toast: HTMLDivElement | null = null;
+  const showToast = (msg: string) => {
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "accent-toast";
+      toast.setAttribute("role", "status");
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add("is-on");
+    window.setTimeout(() => toast?.classList.remove("is-on"), 1800);
+  };
+
   document.querySelectorAll<HTMLElement>(".swatch[data-accent]").forEach((b) =>
-    b.addEventListener("click", () => {
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
       const name = b.dataset.accent || "green";
       localStorage.setItem(STORE.accent, name);
       applyAccent(name);
+      showToast(`تم تغيير لون الموقع إلى ${NAMES[name] ?? name}`);
+      setPop(false);
     })
   );
 

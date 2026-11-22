@@ -90,3 +90,60 @@ html[data-theme="dark"] .article-cover{border-color:#243a33;background:#152823}
 .article-gallery figure{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
 .article-gallery img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
 html[data-theme="dark"] .article-gallery figure{border-color:#243a33;background:#152823}
+
+/* ===== الألوان: تغيير مرئي حقيقي =====
+   الافتراضي = الهوية الخضراء. كل لون يعرّف تدرّجات تُستخدم في المساحات الكبيرة
+   (الهيرو، الأقسام الفاتحة، التذييل) لا في النصوص فقط. */
+html[data-accent="green"]{--accent-deep:#102f2a;--accent-soft1:#f2f6f1;--accent-soft2:#edf3ed;--accent-soft3:#e5eee8;--accent-tint:#edf4ef}
+html[data-accent="teal"]{--accent-deep:#0b3d3f;--accent-soft1:#eef6f6;--accent-soft2:#e6f3f3;--accent-soft3:#dcedec;--accent-tint:#e8f4f4}
+html[data-accent="ink"]{--accent-deep:#152441;--accent-soft1:#eff2f8;--accent-soft2:#e8edf6;--accent-soft3:#dee6f2;--accent-tint:#ebf0f8}
+html[data-accent="amber"]{--accent-deep:#4a2c08;--accent-soft1:#faf5ec;--accent-soft2:#f6efe1;--accent-soft3:#f0e5d2;--accent-tint:#f8f1e6}
+html[data-accent="plum"]{--accent-deep:#33193a;--accent-soft1:#f7f1f8;--accent-soft2:#f1e9f3;--accent-soft3:#e9dfee;--accent-tint:#f4edf6}
+
+.hero{background:linear-gradient(115deg,var(--accent-soft1) 0%,var(--accent-soft2) 62%,var(--accent-soft3) 100%)!important}
+.section-soft{background:var(--accent-soft1)!important}
+.site-footer{background:var(--accent-deep)!important}
+.category-icon{background:var(--accent-tint)!important}
+.primary-button{background:var(--green)!important}
+.primary-button:hover{background:var(--green2)!important}
+.secondary-button{border-color:var(--green)!important;color:var(--green)!important}
+.eyebrow,.read-more,.back-link,.section-heading>a{color:var(--green2)!important}
+.hero h1,.hero h1 em,.section-heading h2,.page-intro h1,.brand{color:var(--green)!important}
+.article-card h3 a,.category-card h2{color:var(--green)}
+.article-toc{border-right-color:var(--green)!important;background:var(--accent-soft1)!important}
+.swatches{gap:10px}
+.swatch{width:28px;height:28px;transition:transform .15s}
+.swatch:hover{transform:scale(1.12)}
+.accent-toast{position:fixed;inset-inline-start:50%;transform:translateX(-50%);bottom:22px;background:var(--accent-deep);color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;z-index:80;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s}
+.accent-toast.is-on{opacity:1}
+
+/* الوضع الليلي يتقدّم على الألوان (نفس الملف، بترتيب لاحق + !important) */
+html[data-theme="dark"] .hero{background:linear-gradient(115deg,#12251f 0%,#142a24 62%,#17322a 100%)!important}
+html[data-theme="dark"] .section-soft{background:#132521!important}
+html[data-theme="dark"] .site-footer{background:#0b1f1b!important}
+html[data-theme="dark"] .category-icon{background:#1d352f!important}
+html[data-theme="dark"] .article-toc{background:#152823!important;border-right-color:var(--green2)!important}
+html[data-theme="dark"] .hero h1,html[data-theme="dark"] .section-heading h2,html[data-theme="dark"] .page-intro h1,html[data-theme="dark"] .brand{color:#eaf3ef!important}
+
+/* ===== الألوان على الصفحة الرئيسية (الصفحة تستخدم قيمًا ثابتة) ===== */
+:root{--hp-ink:#173c33;--hp-ink2:#376b56;--hp-line:#e4eae4;--hp-soft:#f1f4ef;--hp-soft2:#f7f8f4;--hp-soft3:#f4f6f1;--hp-soft4:#f8f6f1;--hp-latest:#f5f6f2}
+html[data-accent="teal"]{--hp-ink:#0f5f63;--hp-ink2:#14787c;--hp-line:#dcecec;--hp-soft:#eef6f6;--hp-soft2:#f0f8f8;--hp-soft3:#eaf4f4;--hp-soft4:#f2f8f8;--hp-latest:#e9f4f4}
+html[data-accent="ink"]{--hp-ink:#1f3358;--hp-ink2:#2b4a7d;--hp-line:#dfe6f1;--hp-soft:#eff2f8;--hp-soft2:#f3f6fb;--hp-soft3:#edf1f8;--hp-soft4:#f5f7fc;--hp-latest:#e9eef7}
+html[data-accent="amber"]{--hp-ink:#7a4a12;--hp-ink2:#9a5f1a;--hp-line:#f0e3d0;--hp-soft:#faf5ec;--hp-soft2:#fcf8f1;--hp-soft3:#f8f2e8;--hp-soft4:#fdf9f3;--hp-latest:#f7f1e7}
+html[data-accent="plum"]{--hp-ink:#4b2b52;--hp-ink2:#6a3c72;--hp-line:#eaddf0;--hp-soft:#f7f1f8;--hp-soft2:#faf6fb;--hp-soft3:#f5eef7;--hp-soft4:#fbf7fc;--hp-latest:#f3ecf5}
+
+.magazine-hero{background:var(--hp-soft)!important;border-bottom-color:var(--hp-line)!important}
+.hero-copy h1{color:var(--hp-ink)!important}
+.hero-copy h1 em{color:var(--green2)!important}
+.hero-watermark{color:color-mix(in srgb,var(--hp-ink) 4%,transparent)!important}
+.magazine-section-heading h2,.magazine-section-card h3,.curated-item h3,.article-card h3,.featured-story h3{color:var(--hp-ink)!important}
+.magazine-section-heading>a,.section-arrow,.read-more,.curated-arrow{color:var(--hp-ink2)!important}
+.magazine-section-card{border-color:var(--hp-line)!important}
+.section-card-2{background:var(--hp-soft2)!important}
+.section-card-3{background:var(--hp-soft3)!important}
+.section-card-4{background:var(--hp-soft4)!important}
+.latest-section{background:var(--hp-latest)!important;border-block-color:var(--hp-line)!important}
+.curated-list,.curated-item{border-color:var(--hp-line)!important}
+.featured-story{background:var(--green)!important}
+.featured-link,.featured-category,.featured-story time{color:#e4f0e8!important}
+.status-hero,.section-status{color:var(--hp-ink2)!important}

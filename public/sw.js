@@ -1,5 +1,5 @@
 // Service worker — طموح: شبكة أولًا للصفحات، وكاش للأصول الثابتة.
-const CACHE = "tamouh-v1";
+const CACHE = "tamouh-v2";
 const PRECACHE = ["/", "/manifest.webmanifest", "/favicon.png", "/offline"];
 
 self.addEventListener("install", (event) => {
