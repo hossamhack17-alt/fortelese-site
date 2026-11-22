@@ -1,5 +1,5 @@
 # Cloudflare Pages يحذف امتداد .html بـ 308 — لذلك نُظهر كل ملف .html كـ 200 على مساره الأصلي.
-# (مطلوب: روابط Blogger المفهرسة تبقى 200 بامتدادها)
+# مولّد آليًا عبر scripts/gen_html_proxies.py — لا تُحرّره يدويًا.
 
 /2025/01/beautiful-short-phrases-about-success.html  /2025/01/beautiful-short-phrases-about-success  200
 /2025/01/beautiful-short-phrases-for-the-soul.html  /2025/01/beautiful-short-phrases-for-the-soul  200

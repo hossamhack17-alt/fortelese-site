@@ -1,0 +1,292 @@
+---
+// شريط أدوات الموقع: بحث (بالصوت والنص)، تثبيت التطبيق، تكبير/تصغير النص، الألوان والوضع الليلي.
+// كل الإعدادات تُحفظ محليًا في المتصفح ولا تُرسل إلى أي خادم.
+---
+<div class="tools" role="group" aria-label="أدوات الموقع">
+  <button type="button" class="tool" data-open-search aria-label="البحث في الموقع" title="ابحث (اختصار: /)">
+    <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="tool-label">بحث</span>
+  </button>
+
+  <button type="button" class="tool" data-install hidden aria-label="تثبيت التطبيق على هذا الجهاز" title="تثبيت التطبيق">
+    <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="tool-label">تثبيت</span>
+  </button>
+
+  <div class="tool-group" role="group" aria-label="حجم النص">
+    <button type="button" class="tool tool-icon" data-font="-" aria-label="تصغير النص" title="تصغير النص">أ−</button>
+    <button type="button" class="tool tool-icon" data-font="+" aria-label="تكبير النص" title="تكبير النص">أ+</button>
+  </div>
+
+  <button type="button" class="tool" data-toggle-theme aria-label="الوضع الليلي" title="الوضع الليلي" aria-pressed="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path d="M20 14.5A8 8 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  </button>
+
+  <button type="button" class="tool" data-open-colors aria-label="ألوان الموقع" aria-expanded="false" title="ألوان الموقع">
+    <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="10" r="1.6" fill="currentColor"/><circle cx="15" cy="10" r="1.6" fill="currentColor"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg>
+  </button>
+</div>
+
+<div class="color-pop" id="color-pop" hidden>
+  <p class="color-pop-title">لون الموقع</p>
+  <div class="swatches" role="radiogroup" aria-label="اختيار لون الموقع">
+    <button type="button" class="swatch" data-accent="green" role="radio" aria-checked="true" aria-label="أخضر" style="--sw:#123d35"></button>
+    <button type="button" class="swatch" data-accent="teal" role="radio" aria-checked="false" aria-label="تركوازي" style="--sw:#0f5f63"></button>
+    <button type="button" class="swatch" data-accent="ink" role="radio" aria-checked="false" aria-label="كحلي" style="--sw:#1f3358"></button>
+    <button type="button" class="swatch" data-accent="amber" role="radio" aria-checked="false" aria-label="عنبري" style="--sw:#7a4a12"></button>
+    <button type="button" class="swatch" data-accent="plum" role="radio" aria-checked="false" aria-label="بنفسجي" style="--sw:#4b2b52"></button>
+  </div>
+  <div class="color-pop-row">
+    <button type="button" class="tool" data-theme-mode="auto">تلقائي</button>
+    <button type="button" class="tool" data-theme-mode="light">نهاري</button>
+    <button type="button" class="tool" data-theme-mode="dark">ليلي</button>
+  </div>
+</div>
+
+<dialog class="search-dialog" id="search-dialog" aria-label="البحث في الموقع">
+  <form method="dialog" class="search-head">
+    <label for="site-q" class="sr-only">كلمة البحث</label>
+    <input id="site-q" type="search" placeholder="ابحث عن عبارة أو موضوع…" autocomplete="off" />
+    <button type="button" class="tool" data-voice aria-label="البحث بالصوت" title="البحث بالصوت">🎙</button>
+    <button type="submit" class="tool" aria-label="إغلاق البحث" title="إغلاق">✕</button>
+  </form>
+  <p class="search-status" id="search-status" aria-live="polite"></p>
+  <ul class="search-results" id="search-results"></ul>
+  <p class="search-foot"><a href="/search/">فتح صفحة البحث الكاملة</a></p>
+</dialog>
+
+<script>
+  type Item = { t: string; d: string; u: string; c: string; s: string };
+
+  const root = document.documentElement;
+  const STORE = { theme: "tm-theme", accent: "tm-accent", scale: "tm-scale" };
+  const SCALES = [1, 1.1, 1.2, 1.3];
+
+  // ---------- الألوان والأوضاع ----------
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function applyTheme(mode: string) {
+    const dark = mode === "dark" || (mode === "auto" && mq.matches);
+    root.dataset.theme = dark ? "dark" : "light";
+    root.dataset.themeMode = mode;
+    const btn = document.querySelector("[data-toggle-theme]");
+    btn?.setAttribute("aria-pressed", String(dark));
+  }
+
+  function applyAccent(name: string) {
+    root.dataset.accent = name;
+    document.querySelectorAll<HTMLElement>("[data-accent]").forEach((el) => {
+      el.setAttribute("aria-checked", String(el.dataset.accent === name));
+    });
+  }
+
+  function applyScale(i: number) {
+    const idx = Math.max(0, Math.min(SCALES.length - 1, i));
+    root.dataset.scale = String(idx);
+    document.body.style.zoom = String(SCALES[idx]);
+  }
+
+  // استرجاع الإعدادات
+  const savedTheme = localStorage.getItem(STORE.theme) || "auto";
+  const savedAccent = localStorage.getItem(STORE.accent) || "green";
+  const savedScale = Number(localStorage.getItem(STORE.scale) ?? "0");
+  applyTheme(savedTheme);
+  applyAccent(savedAccent);
+  applyScale(Number.isFinite(savedScale) ? savedScale : 0);
+  mq.addEventListener("change", () => { if (root.dataset.themeMode === "auto") applyTheme("auto"); });
+
+  // ---------- الأزرار ----------
+  document.querySelector("[data-toggle-theme]")?.addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem(STORE.theme, next);
+    applyTheme(next);
+  });
+
+  document.querySelectorAll<HTMLElement>("[data-theme-mode]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const mode = b.dataset.themeMode || "auto";
+      localStorage.setItem(STORE.theme, mode);
+      applyTheme(mode);
+      document.getElementById("color-pop")?.setAttribute("hidden", "");
+    })
+  );
+
+  document.querySelectorAll<HTMLElement>("[data-accent]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const name = b.dataset.accent || "green";
+      localStorage.setItem(STORE.accent, name);
+      applyAccent(name);
+    })
+  );
+
+  document.querySelectorAll<HTMLElement>("[data-font]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const cur = Number(localStorage.getItem(STORE.scale) ?? "0");
+      const step = b.dataset.font === "+" ? 1 : -1;
+      const next = Math.max(0, Math.min(SCALES.length - 1, cur + step));
+      localStorage.setItem(STORE.scale, String(next));
+      applyScale(next);
+      announce(next === 0 ? "حجم النص الافتراضي" : `حجم النص ${Math.round(SCALES[next] * 100)}٪`);
+    })
+  );
+
+  const pop = document.getElementById("color-pop");
+  document.querySelector("[data-open-colors]")?.addEventListener("click", (e) => {
+    const btn = e.currentTarget as HTMLElement;
+    if (!pop) return;
+    const open = !pop.hidden;
+    pop.hidden = open;
+    btn.setAttribute("aria-expanded", String(!open));
+  });
+  document.addEventListener("click", (e) => {
+    const t = e.target as Node;
+    if (!pop || pop.hidden) return;
+    if (pop.contains(t) || (t as HTMLElement).closest?.("[data-open-colors]")) return;
+    pop.hidden = true;
+    document.querySelector("[data-open-colors]")?.setAttribute("aria-expanded", "false");
+  });
+
+  // ---------- تثبيت التطبيق ----------
+  let deferredPrompt: any = null;
+  const installBtn = document.querySelector<HTMLElement>("[data-install]");
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.hidden = false;
+  });
+  installBtn?.addEventListener("click", async () => {
+    if (!deferredPrompt) {
+      announce("لتثبيت التطبيق: افتح قائمة المتصفح ثم «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».");
+      return;
+    }
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.hidden = true;
+  });
+  window.addEventListener("appinstalled", () => { if (installBtn) installBtn.hidden = true; });
+
+  // ---------- البحث ----------
+  const dialog = document.getElementById("search-dialog") as HTMLDialogElement | null;
+  const input = document.getElementById("site-q") as HTMLInputElement | null;
+  const results = document.getElementById("search-results") as HTMLUListElement | null;
+  const status = document.getElementById("search-status") as HTMLParagraphElement | null;
+  let index: Item[] = [];
+
+  const norm = (s: string) =>
+    s.replace(/[\u064B-\u0652]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").toLowerCase();
+
+  async function loadIndex() {
+    if (index.length) return index;
+    const res = await fetch("/search-index.json");
+    index = (await res.json()) as Item[];
+    return index;
+  }
+
+  async function runSearch(q: string) {
+    if (!results || !status) return;
+    const nq = norm(q.trim());
+    results.innerHTML = "";
+    if (!nq) { status.textContent = ""; return; }
+    const items = await loadIndex();
+    const words = nq.split(/\s+/).filter(Boolean);
+    const scored = items
+      .map((it) => {
+        const hay = norm(`${it.t} ${it.d} ${it.c} ${it.s}`);
+        let score = 0;
+        for (const w of words) {
+          if (norm(it.t).includes(w)) score += 5;
+          if (norm(it.d).includes(w)) score += 2;
+          if (hay.includes(w)) score += 1;
+        }
+        return { it, score };
+      })
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
+
+    status.textContent = scored.length ? `${scored.length} نتيجة` : "لا نتائج مطابقة — جرّب كلمة أعم.";
+    for (const { it } of scored) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = it.u;
+      a.textContent = it.t;
+      const span = document.createElement("span");
+      span.textContent = it.c;
+      li.append(a, span);
+      results.appendChild(li);
+    }
+  }
+
+  input?.addEventListener("input", () => runSearch(input.value));
+
+  document.querySelector("[data-open-search]")?.addEventListener("click", async () => {
+    if (!dialog) return;
+    dialog.showModal();
+    input?.focus();
+    await loadIndex();
+  });
+
+  // البحث الصوتي (Web Speech API — ar-SA)
+  document.querySelector("[data-voice]")?.addEventListener("click", () => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { announce("البحث الصوتي غير مدعوم في هذا المتصفح."); return; }
+    const rec = new SR();
+    rec.lang = "ar-SA";
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    announce("تحدّث الآن…");
+    rec.onresult = (ev: any) => {
+      const text = ev.results[0][0].transcript as string;
+      if (input) { input.value = text; runSearch(text); }
+    };
+    rec.onerror = () => announce("تعذّر التعرف على الصوت. جرّب مرة أخرى.");
+    rec.start();
+  });
+
+  // اختصار / لفتح البحث
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && !/^(INPUT|TEXTAREA)$/.test((e.target as HTMLElement)?.tagName || "")) {
+      e.preventDefault();
+      dialog?.showModal();
+      input?.focus();
+    }
+    if (e.key === "Escape" && dialog?.open) dialog.close();
+  });
+
+  // ---------- قارئ الحالة ----------
+  let live: HTMLDivElement | null = null;
+  function announce(msg: string) {
+    if (!live) {
+      live = document.createElement("div");
+      live.setAttribute("aria-live", "polite");
+      live.className = "sr-only";
+      document.body.appendChild(live);
+    }
+    live.textContent = msg;
+  }
+
+  // ---------- زر العودة للأعلى + شريط تقدم القراءة ----------
+  const bar = document.createElement("div");
+  bar.className = "read-bar";
+  bar.setAttribute("aria-hidden", "true");
+  document.body.appendChild(bar);
+
+  const top = document.createElement("button");
+  top.type = "button";
+  top.className = "to-top";
+  top.setAttribute("aria-label", "العودة إلى أعلى الصفحة");
+  top.textContent = "↑";
+  top.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  document.body.appendChild(top);
+
+  const onScroll = () => {
+    const h = document.documentElement;
+    const p = h.scrollHeight - h.clientHeight;
+    const ratio = p > 0 ? h.scrollTop / p : 0;
+    bar.style.transform = `scaleX(${ratio})`;
+    top.classList.toggle("is-visible", h.scrollTop > 700);
+  };
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>

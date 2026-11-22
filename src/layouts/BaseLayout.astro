@@ -1,6 +1,8 @@
 ---
 import { site } from "../data/site";
 import "../styles/global.css";
+import "../styles/tools.css";
+import SiteTools from "../components/SiteTools.astro";
 const { title = site.name, description = site.description, canonical, image, schema = [], type = "website", noindex = false } = Astro.props;
 const pageTitle = title === site.name ? site.name : `${title} | ${site.name}`;
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site.url).toString();
@@ -37,6 +39,8 @@ const allSchema = [...baseSchema, ...schema];
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preload" href="/fonts/ibm-plex-sans-arabic-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/ibm-plex-sans-arabic-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:locale" content="ar_AR" />
@@ -54,6 +58,7 @@ const allSchema = [...baseSchema, ...schema];
     ))}
   </head>
   <body>
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
     <header class="site-header">
       <div class="container header-inner">
         <a class="brand" href="/" aria-label="طموح - الرئيسية"><span class="brand-mark">ط</span><span>طموح</span></a>
@@ -63,9 +68,10 @@ const allSchema = [...baseSchema, ...schema];
           <a href="/about/">من نحن</a>
           <a href="/contact/">اتصل بنا</a>
         </nav>
+        <SiteTools />
       </div>
     </header>
-    <main><slot /></main>
+    <main id="main"><slot /></main>
     <footer class="site-footer">
       <div class="container footer-inner">
         <div><a class="brand footer-brand" href="/">طموح</a><p>{site.description}</p></div>

@@ -94,9 +94,15 @@ const articleSchema = [
   description={article.data.description}
   canonical={canonical}
   type="article"
+  image={article.data.featuredImage}
   schema={articleSchema}
 >
   <article class="container article-page article-reading-page">
+    {article.data.featuredImage && (
+      <figure class="article-cover">
+        <img src={article.data.featuredImage} alt={article.data.title} width="1200" height="675" loading="eager" decoding="async" fetchpriority="high" />
+      </figure>
+    )}
     <nav class="article-breadcrumbs" aria-label="مسار التنقل">
       {breadcrumbItems.map((item, index) => (
         <>
@@ -151,6 +157,7 @@ const articleSchema = [
           </nav>
         )}
 
+        <h2 class="sr-only">محتوى المقال</h2>
         <div class="prose article-prose">
           <Content />
         </div>

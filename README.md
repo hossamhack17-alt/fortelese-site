@@ -13,12 +13,21 @@
 - خطوط عربية محلية في `public/fonts` (IBM Plex Sans Arabic) — لا طلب إلى Google Fonts.
 - `_headers` (أمان + كاش) و`functions/_middleware.js` (توحيد apex → www وتنظيف الباراميترات).
 
+## أدوات المستخدم (مضافة)
+بحث فوري + بحث صوتي (`/` للاختصار)، تثبيت التطبيق (PWA install)، تكبير/تصغير النص، خمسة ألوان للموقع، وضع ليلي (يدوي/تلقائي)، شريط تقدم القراءة، زر العودة للأعلى، `skip-link`.
+المكوّنات: `src/components/SiteTools.astro` + `src/styles/tools.css`.
+
+## الصور
+4 صور لكل مقال: صورتان عبر `scripts/build-article-images.mjs` (Hermes) وصورتان يصمّمهما ChatGPT ثم تُحوَّل webp. الغلاف في `featuredImage`.
+
 ## الأوامر
 ```bash
 npm install
 npx astro build                        # ينتج dist/
 node scripts/check-links.mjs dist      # كشف الروابط الداخلية المكسورة
 node scripts/build-brand-assets.mjs    # إعادة توليد الأيقونات والـog
+node scripts/build-article-images.mjs  # صور المقالات (SVG → webp)
+python scripts/gen_html_proxies.py dist public/_redirects   # 200-proxies بعد كل بناء
 ```
 
 ## النشر (Cloudflare Pages — حساب hossamhack17)

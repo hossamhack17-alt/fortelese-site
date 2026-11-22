@@ -7,6 +7,7 @@ category: "عبارات وكلمات"
 categorySlug: phrases
 tags: ["عبارات"]
 draft: false
+featuredImage: "/images/blog-post_22/1.webp"
 oldUrl: "https://www.fortelese.com/2025/01/blog-post_22.html"
 author: "فريق طموح"
 ---
