@@ -6,7 +6,7 @@
 
 /* شريط الأدوات داخل الهيدر */
 .header-inner{flex-wrap:wrap;row-gap:10px}
-.tools{display:flex;align-items:center;gap:6px;margin-inline-start:auto}
+.tools{display:flex;align-items:center;gap:6px;margin-inline-start:auto;position:relative}
 .tool{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;color:var(--green);border-radius:10px;padding:7px 10px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;line-height:1}
 .tool:hover{border-color:#b8cdc1;background:#f7faf8}
 .tool:focus-visible{outline:2px solid var(--green2);outline-offset:2px}
@@ -15,7 +15,7 @@
 @media(min-width:900px){.tool-label{display:inline}}
 
 /* لوحة الألوان */
-.color-pop{position:absolute;top:74px;inset-inline-end:20px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 18px 40px rgba(16,47,42,.14);z-index:20;min-width:230px}
+.color-pop{position:absolute;top:calc(100% + 10px);inset-inline-end:0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 18px 40px rgba(16,47,42,.14);z-index:20;min-width:230px}
 .color-pop-title{margin:0 0 10px;font-size:13px;font-weight:700;color:var(--green)}
 .swatches{display:flex;gap:8px;margin-bottom:12px}
 .swatch{width:30px;height:30px;border-radius:50%;background:var(--sw);border:2px solid transparent;cursor:pointer}
