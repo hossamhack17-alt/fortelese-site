@@ -50,3 +50,10 @@
 - 4 صور لكل مقال: **صورتان يولّدهما Hermes** (`scripts/build-article-images.mjs`) و**صورتان يصمّمهما ChatGPT** ثم تُحوَّلان webp.
 - الغلاف يُسجَّل في `frontmatter.featuredImage` ويظهر أعلى المقال ويُستخدم `og:image`.
 - الدفعة الأولى: `public/images/blog-post_22/1.webp` (غلاف) و`2.webp` (بطاقة عناوين) — منشورتان.
+
+## قيد-9: قسم «التعليم والتدريب» (مُعتمد 2026-11-22)
+- تصنيف جديد `education` = «التعليم والتدريب» في `src/data/site.ts`، ويظهر تلقائيًا في الرئيسية وصفحة التصنيفات.
+- 8 صفحات تأسيسية منشورة على `/2026/11/<slug>.html`:
+  `best-national-university-saudi` · `mba-guide` · `cybersecurity-courses` · `professional-certifications` · `pmp-courses` · `accounting-courses` · `english-institutes` · `remote-vocational-training`.
+- **قاعدة المحتوى في هذا القسم**: صفحات إرشادية تحليلية (معايير اختيار، أسئلة للمزوّد، أخطاء شائعة، أسئلة شائعة) **بلا ترشيحات مدفوعة وبلا أرقام أو تصنيفات أو رسوم مُختلقة**. أي رقم أو ترتيب أو سعر يحتاج مصدرًا موثقًا قبل نشره.
+- تُحدَّث الصفحات دوريًا لأن لوائح القبول والشهادات تتغير، والتاريخ يُحدَّث في `updatedDate`.
