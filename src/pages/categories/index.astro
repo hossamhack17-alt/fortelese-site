@@ -1,0 +1,10 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { categories } from "../../data/site";
+---
+<BaseLayout title="التصنيفات" description="تصفح أقسام ومقالات طموح.">
+  <section class="page-intro container"><span class="eyebrow">اكتشف ما يهمك</span><h1>تصنيفات طموح</h1><p>مكتبة منظمة لتصل إلى الموضوع الذي تبحث عنه بسهولة.</p></section>
+  <section class="container section"><div class="category-grid">
+    {categories.map((category) => <a class="category-card" href={`/categories/${category.slug}/`}><span class="category-icon">✳</span><h2>{category.title}</h2><p>{category.description}</p><span class="category-arrow">←</span></a>)}
+  </div></section>
+</BaseLayout>

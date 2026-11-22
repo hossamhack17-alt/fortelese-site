@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ArticleCard from "../components/ArticleCard.astro";
+import { categories } from "../data/site";
+import { getCollection } from "astro:content";
+const articles = (await getCollection("articles", ({ data }) => !data.draft))
+  .sort((a,b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0));
+const featured = articles.slice(0, 6);
+---
+<BaseLayout title="طموح" description="طموح: كلمات وعبارات ملهمة، ومعرفة وثقافة وموضوعات تهم حياتك اليومية.">
+  <section class="hero">
+    <div class="container hero-content">
+      <span class="eyebrow">مساحة عربية تنبض بالأفكار</span>
+      <h1>كلمات تلهمك،<br/><em>ومعرفة تثري يومك.</em></h1>
+      <p>اكتشف محتوى عربيًا منظمًا يجمع العبارات الجميلة، وتطوير الذات، والمعرفة، وموضوعات الحياة.</p>
+      <a class="primary-button" href="/categories/">استكشف التصنيفات</a>
+    </div>
+    <div class="hero-decoration" aria-hidden="true">ط</div>
+  </section>
+  <section class="container section">
+    <div class="section-heading"><div><span class="eyebrow">تصفّح حسب اهتمامك</span><h2>أقسام طموح</h2></div><a href="/categories/">كل الأقسام ←</a></div>
+    <div class="category-grid">
+      {categories.map((category) => <a class="category-card" href={`/categories/${category.slug}/`}><span class="category-icon">✳</span><h3>{category.title}</h3><p>{category.description}</p><span class="category-arrow">←</span></a>)}
+    </div>
+  </section>
+  <section class="section section-soft">
+    <div class="container">
+      <div class="section-heading"><div><span class="eyebrow">من مكتبة طموح</span><h2>أحدث المقالات</h2></div></div>
+      {featured.length ? <div class="article-grid">{featured.map((article) => <ArticleCard article={article} />)}</div> : <div class="empty-state"><h3>نعمل على تجهيز مكتبة المقالات</h3><p>سيتم استيراد المقالات الحالية بعد استلام نسخة التصدير الكاملة من Blogger، مع الحفاظ على روابطها ومحتواها.</p></div>}
+    </div>
+  </section>
+  <section class="container newsletter-note"><div><span class="eyebrow">طموح يبدأ من هنا</span><h2>محتوى واضح، وتجربة قراءة مريحة.</h2><p>نرتب المعرفة العربية في أقسام واضحة، ونعطي كل موضوع مساحة يستحقها.</p></div><a class="secondary-button" href="/about/">تعرف على طموح</a></section>
+</BaseLayout>

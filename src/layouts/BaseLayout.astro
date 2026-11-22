@@ -1,0 +1,45 @@
+---
+import { site } from "../data/site";
+import "../styles/global.css";
+const { title = site.name, description = site.description, canonical } = Astro.props;
+const pageTitle = title === site.name ? site.name : `${title} | ${site.name}`;
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site.url).toString();
+---
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="theme-color" content="#123d35" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/" aria-label="طموح - الرئيسية"><span class="brand-mark">ط</span><span>طموح</span></a>
+        <nav aria-label="التنقل الرئيسي">
+          <a href="/">الرئيسية</a>
+          <a href="/categories/">التصنيفات</a>
+          <a href="/about/">من نحن</a>
+          <a href="/contact/">اتصل بنا</a>
+        </nav>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div><a class="brand footer-brand" href="/">طموح</a><p>{site.description}</p></div>
+        <div class="footer-links"><a href="/about/">من نحن</a><a href="/contact/">اتصل بنا</a><a href="/privacy/">سياسة الخصوصية</a><a href="/terms/">شروط الاستخدام</a></div>
+        <small>© {new Date().getFullYear()} طموح. جميع الحقوق محفوظة.</small>
+      </div>
+    </footer>
+  </body>
+</html>
