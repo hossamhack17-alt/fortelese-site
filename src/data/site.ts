@@ -11,5 +11,6 @@ export const categories = [
   { title: "العلاقات والأسرة", slug: "family", description: "موضوعات عن الأسرة والعلاقات والتواصل." },
   { title: "النجاح وتطوير الذات", slug: "self-development", description: "التحفيز والنجاح وفهم الذات." },
   { title: "الثقافة والمعرفة", slug: "knowledge", description: "معلومات عامة وألغاز وموضوعات ثقافية." },
+  { title: "الألغاز والأسئلة", slug: "puzzles", description: "ألغاز ومسابقات وتحديات تفاعلية تنشّط الذهن." },
   { title: "الدين والمناسبات", slug: "faith", description: "محتوى إيماني ومناسبات دينية." }
 ];

@@ -1,19 +1,440 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
 import { getCollection, render } from "astro:content";
+
 export async function getStaticPaths() {
   const articles = await getCollection("articles", ({ data }) => !data.draft);
-  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }));
+  return articles.map((article) => ({
+    params: { slug: article.id },
+    props: { article }
+  }));
 }
+
 const { article } = Astro.props;
-const { Content } = await render(article);
+const { Content, headings } = await render(article);
+
+const allArticles = await getCollection("articles", ({ data }) => !data.draft);
+const related = allArticles
+  .filter((item) =>
+    item.id !== article.id &&
+    item.data.categorySlug === article.data.categorySlug
+  )
+  .sort((a, b) =>
+    (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0)
+  )
+  .slice(0, 3);
+
+const rawBody = typeof article.body === "string" ? article.body : "";
+const plainText = rawBody
+  .replace(/<script[\s\S]*?<\/script>/gi, " ")
+  .replace(/<style[\s\S]*?<\/style>/gi, " ")
+  .replace(/<[^>]+>/g, " ")
+  .replace(/[#*_>`~\[\]()!-]/g, " ")
+  .replace(/\s+/g, " ")
+  .trim();
+
+const wordCount = plainText ? plainText.split(" ").length : 0;
+const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
+
+const canonical = new URL(`/articles/${article.id}/`, Astro.site ?? "https://www.fortelese.com").toString();
+const shareText = `${article.data.title} ${canonical}`;
+const dateLabel = article.data.pubDate
+  ? article.data.pubDate.toLocaleDateString("ar")
+  : null;
+
+const breadcrumbItems = [
+  { label: "الرئيسية", url: "/" },
+  { label: article.data.category, url: `/categories/${article.data.categorySlug}/` },
+  { label: article.data.title, url: `/articles/${article.id}/` }
+];
 ---
-<BaseLayout title={article.data.title} description={article.data.description}>
-  <article class="container article-page">
-    <a class="back-link" href={`/categories/${article.data.categorySlug}/`}>← {article.data.category}</a>
-    <header class="article-header"><span class="eyebrow">{article.data.category}</span><h1>{article.data.title}</h1><p>{article.data.description}</p>
-      {article.data.pubDate && <time datetime={article.data.pubDate.toISOString()}>نُشر في {article.data.pubDate.toLocaleDateString("ar")}</time>}
+
+<BaseLayout
+  title={article.data.title}
+  description={article.data.description}
+  canonical={canonical}
+>
+  <article class="container article-page article-reading-page">
+    <nav class="article-breadcrumbs" aria-label="مسار التنقل">
+      {breadcrumbItems.map((item, index) => (
+        <>
+          {index > 0 && <span aria-hidden="true">/</span>}
+          {index === breadcrumbItems.length - 1 ? (
+            <span aria-current="page">{item.label}</span>
+          ) : (
+            <a href={item.url}>{item.label}</a>
+          )}
+        </>
+      ))}
+    </nav>
+
+    <header class="article-header article-reading-header">
+      <span class="eyebrow">{article.data.category}</span>
+      <h1>{article.data.title}</h1>
+      <p class="article-description">{article.data.description}</p>
+
+      <div class="article-meta-row">
+        {dateLabel && (
+          <time datetime={article.data.pubDate?.toISOString()}>
+            <span aria-hidden="true">◷</span>
+            {dateLabel}
+          </time>
+        )}
+        <span>
+          <span aria-hidden="true">⌛</span>
+          {readingMinutes} دقائق للقراءة
+        </span>
+        <a href={`/categories/${article.data.categorySlug}/`}>
+          {article.data.category}
+        </a>
+      </div>
     </header>
-    <div class="prose"><Content /></div>
+
+    <div class="article-reading-layout">
+      <div class="article-main-column">
+        {headings.length > 0 && (
+          <nav class="article-toc" aria-label="محتويات المقال">
+            <details open>
+              <summary>محتويات المقال</summary>
+              <ol>
+                {headings
+                  .filter((heading) => heading.depth === 2 || heading.depth === 3)
+                  .map((heading) => (
+                    <li class:list={{ "toc-subheading": heading.depth === 3 }}>
+                      <a href={`#${heading.slug}`}>{heading.text}</a>
+                    </li>
+                  ))}
+              </ol>
+            </details>
+          </nav>
+        )}
+
+        <div class="prose article-prose">
+          <Content />
+        </div>
+
+        <div class="article-share">
+          <strong>شارك المقال</strong>
+          <div class="share-links">
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="مشاركة عبر واتساب"
+            >واتساب</a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(canonical)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="مشاركة عبر فيسبوك"
+            >فيسبوك</a>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.data.title)}&url=${encodeURIComponent(canonical)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="مشاركة عبر إكس"
+            >إكس</a>
+            <a href={`mailto:?subject=${encodeURIComponent(article.data.title)}&body=${encodeURIComponent(shareText)}`}>
+              البريد
+            </a>
+          </div>
+        </div>
+
+        <div class="article-category-return">
+          <span>من قسم</span>
+          <a href={`/categories/${article.data.categorySlug}/`}>{article.data.category}</a>
+        </div>
+      </div>
+    </div>
   </article>
+
+  {related.length > 0 && (
+    <section class="related-section">
+      <div class="container">
+        <div class="related-heading">
+          <span class="eyebrow">واصل القراءة</span>
+          <h2>مقالات ذات صلة</h2>
+        </div>
+        <div class="article-grid">
+          {related.map((item) => <ArticleCard article={item} />)}
+        </div>
+      </div>
+    </section>
+  )}
 </BaseLayout>
+
+<style>
+  .article-reading-page {
+    max-width: 1040px;
+    padding-top: 35px;
+    padding-bottom: 75px;
+  }
+
+  .article-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    color: #8a958e;
+    font-size: 12px;
+  }
+
+  .article-breadcrumbs a {
+    color: #527662;
+  }
+
+  .article-breadcrumbs [aria-current="page"] {
+    color: #53635a;
+  }
+
+  .article-reading-header {
+    max-width: 850px;
+    margin-inline: auto;
+    padding: 0 0 28px;
+    border-bottom: 1px solid #e6ebe7;
+  }
+
+  .article-reading-header h1 {
+    margin: 10px 0 13px;
+    color: #173c33;
+    font-size: clamp(32px, 5vw, 49px);
+    line-height: 1.5;
+    letter-spacing: -.02em;
+  }
+
+  .article-description {
+    max-width: 760px;
+    color: #66756d;
+    font-size: 17px;
+    line-height: 2;
+  }
+
+  .article-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 22px;
+    align-items: center;
+    margin-top: 22px;
+    color: #77847c;
+    font-size: 12px;
+  }
+
+  .article-meta-row a {
+    color: #47775f;
+  }
+
+  .article-reading-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 820px);
+    justify-content: center;
+    padding-top: 30px;
+  }
+
+  .article-main-column {
+    min-width: 0;
+  }
+
+  .article-toc {
+    margin-bottom: 32px;
+    padding: 20px 24px;
+    border: 1px solid #e4eae4;
+    border-right: 3px solid #47775f;
+    border-radius: 3px 12px 12px 3px;
+    background: #f7f8f5;
+  }
+
+  .article-toc summary {
+    color: #173c33;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .article-toc ol {
+    display: grid;
+    gap: 9px;
+    margin: 15px 0 0;
+    padding-inline-start: 22px;
+    color: #527662;
+    font-size: 14px;
+  }
+
+  .article-toc li::marker {
+    color: #8ca18e;
+  }
+
+  .article-toc .toc-subheading {
+    margin-inline-start: 18px;
+    font-size: 13px;
+  }
+
+  .article-toc a:hover {
+    color: #173c33;
+    text-decoration: underline;
+  }
+
+  .article-prose {
+    max-width: 790px;
+    margin-inline: auto;
+    overflow-wrap: anywhere;
+    color: #344741;
+    font-size: 18px;
+    line-height: 2.1;
+  }
+
+  .article-prose img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 24px auto;
+    border-radius: 10px;
+  }
+
+  .article-prose iframe,
+  .article-prose video {
+    max-width: 100%;
+  }
+
+  .article-prose h2,
+  .article-prose h3 {
+    scroll-margin-top: 25px;
+  }
+
+  .article-prose h2 {
+    margin-top: 2em;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e6ebe7;
+    color: #173c33;
+    font-size: 25px;
+  }
+
+  .article-prose h3 {
+    color: #285a49;
+    font-size: 20px;
+  }
+
+  .article-prose p {
+    margin-block: 1.1em;
+  }
+
+  .article-prose a {
+    color: #376b56;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .article-prose ul,
+  .article-prose ol {
+    padding-inline-start: 28px;
+  }
+
+  .article-prose blockquote {
+    margin-inline: 0;
+    padding: 12px 20px;
+    border-right: 3px solid #8da18f;
+    background: #f6f7f3;
+    color: #53675b;
+  }
+
+  .article-share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-top: 40px;
+    padding-block: 22px;
+    border-block: 1px solid #e6ebe7;
+  }
+
+  .article-share > strong {
+    color: #173c33;
+    font-size: 14px;
+  }
+
+  .share-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .share-links a {
+    padding: 6px 13px;
+    border: 1px solid #dce5dd;
+    border-radius: 30px;
+    color: #376b56;
+    font-size: 12px;
+  }
+
+  .share-links a:hover {
+    border-color: #8da18f;
+    background: #f3f6f1;
+  }
+
+  .article-category-return {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    color: #77847c;
+    font-size: 13px;
+  }
+
+  .article-category-return a {
+    color: #376b56;
+    font-weight: 700;
+  }
+
+  .related-section {
+    padding-block: 60px 75px;
+    background: #f5f6f2;
+    border-top: 1px solid #e8ece6;
+  }
+
+  .related-heading {
+    margin-bottom: 25px;
+  }
+
+  .related-heading h2 {
+    margin: 5px 0 0;
+    color: #173c33;
+    font-size: 27px;
+  }
+
+  @media (max-width: 650px) {
+    .article-reading-page {
+      padding-top: 25px;
+      padding-bottom: 50px;
+    }
+
+    .article-reading-header h1 {
+      font-size: 32px;
+    }
+
+    .article-description {
+      font-size: 15px;
+    }
+
+    .article-prose {
+      font-size: 16px;
+      line-height: 2;
+    }
+
+    .article-prose h2 {
+      font-size: 22px;
+    }
+
+    .article-prose h3 {
+      font-size: 18px;
+    }
+
+    .article-toc {
+      padding: 16px;
+    }
+
+    .related-section {
+      padding-block: 45px;
+    }
+  }
+</style>
+

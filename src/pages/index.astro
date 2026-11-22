@@ -3,31 +3,510 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleCard from "../components/ArticleCard.astro";
 import { categories } from "../data/site";
 import { getCollection } from "astro:content";
-const articles = (await getCollection("articles", ({ data }) => !data.draft))
-  .sort((a,b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0));
-const featured = articles.slice(0, 6);
+
+const allArticles = (await getCollection("articles", ({ data }) => !data.draft))
+  .sort((a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0));
+
+const featured = allArticles[0];
+const latest = allArticles.slice(featured ? 1 : 0, 7);
+const selected = allArticles.slice(1, 4);
+
+const primarySections = [
+  {
+    title: "العبارات والكلمات",
+    slug: "phrases",
+    description: "كلمات للمناسبات، ورسائل تعبّر عمّا يصعب قوله."
+  },
+  {
+    title: "تطوير الذات والحياة",
+    slug: "self-development",
+    description: "أفكار عن النجاح والثقة والعلاقات والعادات."
+  },
+  {
+    title: "الثقافة والمعرفة",
+    slug: "knowledge",
+    description: "موضوعات ثقافية ومعلومات وأسئلة تستحق الاكتشاف."
+  },
+  {
+    title: "الألغاز والأسئلة",
+    slug: "puzzles",
+    description: "مساحة للتحديات الذهنية والأسئلة والمسابقات."
+  }
+];
+
+const existingSections = primarySections.map((section) => ({
+  ...section,
+  available: categories.some((category) => category.slug === section.slug)
+}));
 ---
-<BaseLayout title="طموح" description="طموح: كلمات وعبارات ملهمة، ومعرفة وثقافة وموضوعات تهم حياتك اليومية.">
-  <section class="hero">
-    <div class="container hero-content">
-      <span class="eyebrow">مساحة عربية تنبض بالأفكار</span>
-      <h1>كلمات تلهمك،<br/><em>ومعرفة تثري يومك.</em></h1>
-      <p>اكتشف محتوى عربيًا منظمًا يجمع العبارات الجميلة، وتطوير الذات، والمعرفة، وموضوعات الحياة.</p>
-      <a class="primary-button" href="/categories/">استكشف التصنيفات</a>
+
+<BaseLayout
+  title="طموح"
+  description="طموح: منصة عربية للمعرفة والإلهام والحياة اليومية، تجمع الكلمات والعبارات وتطوير الذات والثقافة."
+>
+  <section class="magazine-hero">
+    <div class="container magazine-hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">مجلة طموح · معرفة تلهم الحياة</span>
+        <h1>للكلمة أثر،<br /><em>وللمعرفة طريق.</em></h1>
+        <p>
+          مساحة عربية تجمع الكلمات التي نبحث عنها، والأفكار التي توسّع نظرتنا،
+          وموضوعات الحياة التي تستحق أن نعود إليها.
+        </p>
+        <a class="primary-button" href="/categories/">اكتشف أقسام طموح</a>
+      </div>
+
+      {featured && (
+        <a class="featured-story" href={`/articles/${featured.id}/`}>
+          <span class="featured-label">موضوعنا المميز</span>
+          <span class="featured-category">{featured.data.category}</span>
+          <h2>{featured.data.title}</h2>
+          <p>{featured.data.description}</p>
+          <span class="featured-link">اقرأ الموضوع <span aria-hidden="true">←</span></span>
+          {featured.data.pubDate && (
+            <time datetime={featured.data.pubDate.toISOString()}>
+              {featured.data.pubDate.toLocaleDateString("ar")}
+            </time>
+          )}
+        </a>
+      )}
     </div>
-    <div class="hero-decoration" aria-hidden="true">ط</div>
+    <div class="hero-watermark" aria-hidden="true">ط</div>
   </section>
-  <section class="container section">
-    <div class="section-heading"><div><span class="eyebrow">تصفّح حسب اهتمامك</span><h2>أقسام طموح</h2></div><a href="/categories/">كل الأقسام ←</a></div>
-    <div class="category-grid">
-      {categories.map((category) => <a class="category-card" href={`/categories/${category.slug}/`}><span class="category-icon">✳</span><h3>{category.title}</h3><p>{category.description}</p><span class="category-arrow">←</span></a>)}
+
+  <section class="container magazine-section">
+    <div class="magazine-section-heading">
+      <div>
+        <span class="eyebrow">مساحات متنوعة</span>
+        <h2>تصفّح حسب اهتمامك</h2>
+      </div>
+      <a href="/categories/">جميع التصنيفات ←</a>
+    </div>
+
+    <div class="magazine-section-grid">
+      {existingSections.map((section, index) => (
+        <a
+          class:list={["magazine-section-card", `section-card-${index + 1}`]}
+          href={`/categories/${section.slug}/`}
+        >
+          <span class="section-number">0{index + 1}</span>
+          <h3>{section.title}</h3>
+          <p>{section.description}</p>
+          {!section.available && <span class="section-status">قسم جديد</span>}
+          <span class="section-arrow" aria-hidden="true">←</span>
+        </a>
+      ))}
     </div>
   </section>
-  <section class="section section-soft">
-    <div class="container">
-      <div class="section-heading"><div><span class="eyebrow">من مكتبة طموح</span><h2>أحدث المقالات</h2></div></div>
-      {featured.length ? <div class="article-grid">{featured.map((article) => <ArticleCard article={article} />)}</div> : <div class="empty-state"><h3>نعمل على تجهيز مكتبة المقالات</h3><p>سيتم استيراد المقالات الحالية بعد استلام نسخة التصدير الكاملة من Blogger، مع الحفاظ على روابطها ومحتواها.</p></div>}
+
+  <section class="latest-section">
+    <div class="container magazine-section">
+      <div class="magazine-section-heading">
+        <div>
+          <span class="eyebrow">من أحدث ما أضيف</span>
+          <h2>أحدث المقالات</h2>
+        </div>
+      </div>
+
+      {latest.length > 0 ? (
+        <div class="article-grid">
+          {latest.map((article) => <ArticleCard article={article} />)}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <h3>المكتبة في بدايتها</h3>
+          <p>ستظهر المقالات هنا عند توفر محتوى منشور في هذا القسم.</p>
+        </div>
+      )}
     </div>
   </section>
-  <section class="container newsletter-note"><div><span class="eyebrow">طموح يبدأ من هنا</span><h2>محتوى واضح، وتجربة قراءة مريحة.</h2><p>نرتب المعرفة العربية في أقسام واضحة، ونعطي كل موضوع مساحة يستحقها.</p></div><a class="secondary-button" href="/about/">تعرف على طموح</a></section>
+
+  <section class="container magazine-section curated-section">
+    <div class="magazine-section-heading">
+      <div>
+        <span class="eyebrow">قراءات مقترحة</span>
+        <h2>مختارات من مكتبة طموح</h2>
+        <p class="section-note">مجموعة من المقالات الموجودة في المكتبة، وليست ترتيبًا حسب عدد المشاهدات.</p>
+      </div>
+    </div>
+
+    {selected.length > 0 ? (
+      <div class="curated-list">
+        {selected.map((article, index) => (
+          <a class="curated-item" href={`/articles/${article.id}/`}>
+            <span class="curated-index">0{index + 1}</span>
+            <span class="curated-content">
+              <span class="curated-category">{article.data.category}</span>
+              <strong>{article.data.title}</strong>
+              <span>{article.data.description}</span>
+            </span>
+            <span class="curated-arrow" aria-hidden="true">←</span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <p>ستظهر المختارات هنا بعد توفر مقالات إضافية.</p>
+      </div>
+    )}
+  </section>
+
+  <section class="magazine-bottom">
+    <div class="container magazine-bottom-inner">
+      <div>
+        <span class="eyebrow">طموح</span>
+        <h2>كل موضوع جيد يستحق مكانًا واضحًا.</h2>
+        <p>تصفّح المكتبة، واختر الموضوع الذي يهمك، وانتقل بين المقالات ذات الصلة.</p>
+      </div>
+      <a class="secondary-button" href="/about/">تعرف على طموح</a>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .magazine-hero {
+    position: relative;
+    overflow: hidden;
+    background: #f1f4ef;
+    border-bottom: 1px solid #e4eae4;
+  }
+
+  .magazine-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 55px;
+    align-items: center;
+    min-height: 475px;
+    padding-block: 65px;
+  }
+
+  .hero-copy h1 {
+    margin: 17px 0;
+    color: #173c33;
+    font-size: clamp(42px, 5.5vw, 68px);
+    line-height: 1.28;
+    letter-spacing: -.035em;
+  }
+
+  .hero-copy h1 em {
+    color: #6c8b70;
+    font-style: normal;
+  }
+
+  .hero-copy p {
+    max-width: 520px;
+    margin: 0 0 27px;
+    color: #63736b;
+    font-size: 17px;
+    line-height: 2;
+  }
+
+  .featured-story {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+    padding: 32px;
+    overflow: hidden;
+    border-radius: 4px 28px 4px 28px;
+    color: #fff;
+    background: #173c33;
+    box-shadow: 0 20px 50px #173c331a;
+  }
+
+  .featured-story::after {
+    position: absolute;
+    left: -40px;
+    bottom: -110px;
+    width: 260px;
+    height: 260px;
+    border: 1px solid #ffffff24;
+    border-radius: 50%;
+    content: "";
+    box-shadow: 0 0 0 28px #ffffff08, 0 0 0 58px #ffffff06;
+    pointer-events: none;
+  }
+
+  .featured-label {
+    align-self: flex-start;
+    padding: 5px 11px;
+    border: 1px solid #ffffff4a;
+    border-radius: 30px;
+    color: #e4eadf;
+    font-size: 12px;
+  }
+
+  .featured-category {
+    margin-top: 35px;
+    color: #b8cbb8;
+    font-size: 13px;
+  }
+
+  .featured-story h2 {
+    position: relative;
+    z-index: 1;
+    margin: 8px 0;
+    font-size: clamp(25px, 3vw, 34px);
+    line-height: 1.55;
+  }
+
+  .featured-story p {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 20px;
+    color: #d0ddd3;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+
+  .featured-link {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    color: #dce8d9;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .featured-story time {
+    position: absolute;
+    top: 34px;
+    left: 30px;
+    color: #b8cbb8;
+    font-size: 12px;
+  }
+
+  .hero-watermark {
+    position: absolute;
+    left: 2%;
+    bottom: -110px;
+    color: #173c3308;
+    font-size: 330px;
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .magazine-section {
+    padding-block: 70px;
+  }
+
+  .magazine-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .magazine-section-heading h2 {
+    margin: 6px 0 0;
+    color: #173c33;
+    font-size: clamp(25px, 3vw, 33px);
+  }
+
+  .magazine-section-heading > a {
+    color: #376b56;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .magazine-section-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .magazine-section-card {
+    position: relative;
+    display: flex;
+    min-height: 205px;
+    flex-direction: column;
+    padding: 22px;
+    border: 1px solid #e4eae4;
+    border-radius: 3px 18px 3px 18px;
+    background: #fff;
+    transition: transform .2s, border-color .2s;
+  }
+
+  .magazine-section-card:hover {
+    transform: translateY(-4px);
+    border-color: #a9bcae;
+  }
+
+  .section-number {
+    color: #829987;
+    font-size: 12px;
+    letter-spacing: .12em;
+  }
+
+  .magazine-section-card h3 {
+    margin: 20px 0 7px;
+    color: #173c33;
+    font-size: 18px;
+  }
+
+  .magazine-section-card p {
+    margin: 0 0 18px;
+    color: #718078;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+
+  .section-arrow {
+    margin-top: auto;
+    color: #47775f;
+  }
+
+  .section-status {
+    align-self: flex-start;
+    margin-top: 4px;
+    color: #8b7651;
+    font-size: 11px;
+  }
+
+  .section-card-2 { background: #f7f8f4; }
+  .section-card-3 { background: #f4f6f1; }
+  .section-card-4 { background: #f8f6f1; }
+
+  .latest-section {
+    background: #f5f6f2;
+    border-block: 1px solid #e8ece6;
+  }
+
+  .section-note {
+    margin: 8px 0 0;
+    color: #77847c;
+    font-size: 13px;
+  }
+
+  .curated-section {
+    padding-bottom: 82px;
+  }
+
+  .curated-list {
+    border-top: 1px solid #e4eae4;
+  }
+
+  .curated-item {
+    display: grid;
+    grid-template-columns: 55px 1fr 30px;
+    gap: 18px;
+    align-items: center;
+    padding: 20px 8px;
+    border-bottom: 1px solid #e4eae4;
+  }
+
+  .curated-index {
+    color: #8da18f;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .curated-content {
+    display: grid;
+    gap: 4px;
+  }
+
+  .curated-category {
+    color: #47775f;
+    font-size: 12px;
+  }
+
+  .curated-content strong {
+    color: #173c33;
+    font-size: 17px;
+  }
+
+  .curated-content > span:last-child {
+    color: #758078;
+    font-size: 13px;
+  }
+
+  .curated-arrow {
+    color: #47775f;
+  }
+
+  .magazine-bottom {
+    background: #edf2ec;
+  }
+
+  .magazine-bottom-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    padding-block: 48px;
+  }
+
+  .magazine-bottom h2 {
+    margin: 5px 0;
+    color: #173c33;
+    font-size: 25px;
+  }
+
+  .magazine-bottom p {
+    margin: 0;
+    color: #68776e;
+    font-size: 14px;
+  }
+
+  @media (max-width: 850px) {
+    .magazine-hero-inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding-block: 48px;
+    }
+
+    .featured-story {
+      min-height: 260px;
+    }
+
+    .magazine-section-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hero-copy h1 {
+      font-size: 43px;
+    }
+
+    .hero-copy p {
+      font-size: 15px;
+    }
+
+    .magazine-section {
+      padding-block: 48px;
+    }
+
+    .magazine-section-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .magazine-section-card {
+      min-height: 160px;
+    }
+
+    .curated-item {
+      grid-template-columns: 35px 1fr 18px;
+      gap: 10px;
+    }
+
+    .curated-content strong {
+      font-size: 15px;
+    }
+
+    .curated-content > span:last-child {
+      font-size: 12px;
+    }
+
+    .magazine-bottom-inner {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>
+
