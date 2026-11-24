@@ -6,7 +6,10 @@ import SiteTools from "../components/SiteTools.astro";
 const { title = site.name, description = site.description, canonical, image, schema = [], type = "website", noindex = false, lang = "ar", dir = "rtl" } = Astro.props;
 const pageTitle = title === site.name ? site.name : `${title} | ${site.name}`;
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site.url).toString();
-const ogImage = new URL(image ?? "/og-default.jpg", site.url).toString();
+// صورة OG مولّدة لكل صفحة (scripts/gen_og_images.py) مع بديل عام
+const ogSlug = (Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "").replace(/\/+$/, "") || "/")
+  .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "home";
+const ogImage = new URL(image ?? `/og/${ogSlug}.svg`, site.url).toString();
 
 // بيانات منظمة أساسية لكل صفحة: الموقع + مربع البحث.
 // تُبنى فقط من بيانات موجودة فعلًا — لا كيانات وهمية ولا تقييمات.

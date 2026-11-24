@@ -3,7 +3,7 @@ import EnLayout from "../../layouts/EnLayout.astro";
 import { getCollection } from "astro:content";
 import { EN_SECTIONS as SECTIONS } from "../../data/en-sections";
 
-const posts = (await getCollection("articlesEn", ({ data }) => !data.draft)).sort(
+const posts = (await getCollection("articlesEn", ({ data }) => !data.draft && data.section !== "about")).sort(
   (a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0)
 );
 

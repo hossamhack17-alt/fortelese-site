@@ -81,6 +81,34 @@ for ln in lines:
             lines.append(f"{clean}/  {dst}  200")
             slash_count += 1
 
+# زرع السجلات ضيقًا: في Cloudflare Pages تتوقف معالجة أي قاعدة جزئية بعد أول تطابق،
+# فقاعدة عامة مثل /دليل... كانت تُبطل القواعد الأفصح تحتها. نزرع القواعد الطويلة أولًا
+# بحيث لا يكون لأي قاعدة سابقة بادئة مطابقة.
+by_first = {}
+for ln in lines:
+    parts = ln.split()
+    if len(parts) != 3:
+        continue
+    src = urllib.parse.unquote(parts[0])
+    first = src.split("/")[1] if src.startswith("/") and len(src.split("/")) > 1 else ""
+    by_first.setdefault(first, []).append((src, ln))
+
+ordered, conflicts = [], 0
+for first, group in by_first.items():
+    if len(group) == 1:
+        ordered.extend(ln for _, ln in group)
+        continue
+    group_sorted = sorted(group, key=lambda x: -len(x[0]))
+    kept = []
+    for src, ln in group_sorted:
+        shorter = [s2 for s2, _ in kept]
+        if any(s2.startswith(src) or src.startswith(s2) for s2 in shorter if s2 != src):
+            conflicts += 1
+            continue
+        kept.append((src, ln))
+    ordered.extend(ln for _, ln in kept)
+
+lines = ordered
 for src, dst in LEGACY_301:
     lines.append(f"{urllib.parse.quote(src)}  {dst}  301")
 
@@ -92,4 +120,5 @@ with open(out, "w", encoding="utf-8", newline="\n") as fh:
 for _ln in lines:
     if "/health-insurance-uae-expats/" in _ln or "/en/fintech-guide/" in _ln:
         print("RULE:", _ln)
+print(f"shadowed {conflicts} overlapping rules removed")
 print(f"wrote {out}: {count} proxies + {slash_count} slash 200 + {legacy_count} legacy 301 + {len(LEGACY_301)} manual 301")

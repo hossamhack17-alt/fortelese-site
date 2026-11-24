@@ -16,13 +16,15 @@ const {
 } = Astro.props;
 const pageTitle = title ? `${title} | Fortelese` : "Fortelese — English";
 const canonical = new URL(Astro.url.pathname, site.url).toString();
+const base = "https://www.fortelese.com";
 
 const nav = [
   { href: "/en", label: "Home" },
   { href: "/en/sections/online-mba", label: "Online MBA" },
   { href: "/en/sections/executive-career", label: "Careers" },
   { href: "/en/sections/crypto", label: "Markets" },
-  { href: "/oxfam", label: "Oxfam" },
+  { href: "/en/about", label: "About" },
+  { href: "/en/contact", label: "Contact" },
 ];
 ---
 <!doctype html>
@@ -34,7 +36,7 @@ const nav = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
-    <meta property="og:image" content="https://www.fortelese.com/og-default.jpg" />
+    <meta property="og:image" content={`${base}/og/${(Astro.url.pathname.replace(/\.html$/, "").replace(/\/index$/, "").replace(/\/+$/, "") || "/").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "home"}.svg`} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <link rel="alternate" hreflang="x-default" href="https://www.fortelese.com/" />

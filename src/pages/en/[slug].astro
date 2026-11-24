@@ -40,7 +40,10 @@ const articleJsonLd = {
 <EnLayout title={post.data.title} description={post.data.description} type="article" jsonld={articleJsonLd}>
   <article>
     <header class="article-head">
-      <p class="eyebrow"><a href="/en">English</a> · <a href={`/en/sections/${post.data.section ?? "online-mba"}`}>{post.data.category}</a></p>
+      <p class="eyebrow">
+        <a href="/en">English</a>
+        {post.data.section !== "about" && <> · <a href={`/en/sections/${post.data.section ?? "online-mba"}`}>{post.data.category}</a></>}
+      </p>
       <h1>{post.data.title}</h1>
       <p class="meta">
         {date} · {Math.max(1, Math.round(words / 220))} min read · {post.data.author}

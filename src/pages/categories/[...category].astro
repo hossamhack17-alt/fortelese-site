@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { categories } from "../../data/site";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const PER_PAGE = 12;
+  const all = await getCollection("articles", ({ data }) => !data.draft);
+  const paths = [];
+  for (const category of categories) {
+    const n = all.filter((a) => a.data.categorySlug === category.slug).length;
+    const pages = Math.max(1, Math.ceil(n / PER_PAGE));
+    for (let i = 1; i <= pages; i++) {
+      paths.push({ params: { category: i === 1 ? category.slug : `${category.slug}/page/${i}` }, props: { category, page: i } });
+    }
+  }
+  return paths;
+}
+
+const { category, page } = Astro.props as { category: (typeof categories)[number]; page: number };
+const all = (await getCollection("articles", ({ data }) => !data.draft && data.categorySlug === category.slug))
+  .sort((a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0));
+const PER_PAGE = 12;
+const total = Math.max(1, Math.ceil(all.length / PER_PAGE));
+const articles = all.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+---
+<BaseLayout
+  title={page > 1 ? `${category.title} — صفحة ${page} | مقالات` : `${category.title} | مقالات`}
+  description={`${category.description} مقالات مراجعة ومنظمة مع فهرس داخل الصفحة وروابط لموضوعات ذات صلة.`}
+>
+  <section class="page-intro container"><a class="back-link" href="/categories/">← جميع التصنيفات</a><span class="eyebrow">تصنيف</span><h1>{category.title}</h1><p>{category.description}</p></section>
+  <section class="container section">
+    {articles.length ? <div class="article-grid">{articles.map((article) => <ArticleCard article={article} />)}</div> : <div class="empty-state"><h2>سيُضاف المحتوى قريبًا</h2><p>هذا القسم جاهز، وتُستكمل مقالته بعد استيراد محتوى Blogger والتحقق من الروابط القديمة.</p></div>}
+    {total > 1 && (
+      <nav class="pager" aria-label="ترقيم الصفحات" style="margin-top:2rem;display:flex;gap:.6rem;flex-wrap:wrap">
+        {Array.from({ length: total }, (_, i) => i + 1).map((n) => (
+          <a
+            class={n === page ? "primary-button" : "secondary-button"}
+            href={n === 1 ? `/categories/${category.slug}` : `/categories/${category.slug}/page/${n}`}
+            aria-current={n === page ? "page" : undefined}
+          >{n}</a>
+        ))}
+      </nav>
+    )}
+  </section>
+</BaseLayout>

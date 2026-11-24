@@ -49,4 +49,4 @@ createServer((req, res) => {
   const nf = join(ROOT, "404.html");
   res.writeHead(404, { "content-type": "text/html" });
   res.end(existsSync(nf) ? readFileSync(nf) : "404");
-}).listen(8799, "127.0.0.1", () => console.log("redirect-check server on 8792, rules:", rules.length));
+}).listen(8800, "127.0.0.1", () => console.log("redirect-check server on 8792, rules:", rules.length));

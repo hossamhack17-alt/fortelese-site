@@ -1,0 +1,62 @@
+---
+import EnLayout from "../../../layouts/EnLayout.astro";
+import { getCollection } from "astro:content";
+import { EN_SECTIONS as SECTIONS, sectionSlugs } from "../../../data/en-sections";
+
+export async function getStaticPaths() {
+  const PER_PAGE = 10;
+  const all = await getCollection("articlesEn", ({ data }) => !data.draft);
+  const paths = [];
+  for (const section of sectionSlugs) {
+    const posts = all.filter((p) => p.data.section === section);
+    const pages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
+    for (let n = 1; n <= pages; n++) {
+      paths.push({ params: { section: n === 1 ? section : `${section}/page/${n}` }, props: { page: n } });
+    }
+  }
+  return paths;
+}
+
+const raw = (Astro.params as { section: string }).section;
+const segment = raw.includes("/") ? raw.split("/")[0] : raw;
+const { page } = Astro.props as { page: number };
+const title = SECTIONS[segment] ?? segment;
+const all = (await getCollection("articlesEn", ({ data }) => !data.draft))
+  .filter((p) => p.data.section === segment)
+  .sort((a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0));
+const PER_PAGE = 10;
+const total = Math.max(1, Math.ceil(all.length / PER_PAGE));
+const posts = all.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+---
+<EnLayout
+  title={page > 1 ? `${title} — page ${page}` : title}
+  description={`${title} — ${all.length} long-form English guides on Fortelese.`}
+>
+  <p class="eyebrow"><a href="/en">English</a> · section</p>
+  <h1>{title}</h1>
+  <p class="lead">{all.length} articles{total > 1 ? ` · page ${page} of ${total}` : ""}</p>
+
+  <div class="grid" style="margin-top:1.8rem">
+    {posts.map((p) => (
+      <article class="card">
+        <h3><a href={`/en/${p.data.path ?? p.id}/`}>{p.data.title}</a></h3>
+        <p>{p.data.description}</p>
+        <p class="meta">{p.data.pubDate?.toISOString().slice(0, 10)}</p>
+      </article>
+    ))}
+  </div>
+
+  {total > 1 && (
+    <nav class="pager" aria-label="Pagination" style="margin-top:2rem;display:flex;gap:.6rem;flex-wrap:wrap">
+      {Array.from({ length: total }, (_, i) => i + 1).map((n) => (
+        <a
+          class={n === page ? "btn btn-solid" : "btn"}
+          href={n === 1 ? `/en/sections/${segment}/` : `/en/sections/${segment}/page/${n}/`}
+          aria-current={n === page ? "page" : undefined}
+        >{n}</a>
+      ))}
+    </nav>
+  )}
+
+  <p style="margin-top:2rem"><a class="btn" href="/en">← All English articles</a></p>
+</EnLayout>
