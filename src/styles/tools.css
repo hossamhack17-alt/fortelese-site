@@ -108,7 +108,9 @@ html[data-accent="plum"]{--accent-deep:#33193a;--accent-soft1:#f7f1f8;--accent-s
 .primary-button:hover{background:var(--green2)!important}
 .secondary-button{border-color:var(--green)!important;color:var(--green)!important}
 .eyebrow,.read-more,.back-link,.section-heading>a{color:var(--green2)!important}
-.hero h1,.hero h1 em,.section-heading h2,.page-intro h1,.brand{color:var(--green)!important}
+.hero h1,.hero h1 em,.section-heading h2,.page-intro h1{color:var(--green)!important}
+.brand{color:var(--green)!important}
+.site-footer .brand,.footer-brand{color:#eaf3ef!important}
 .article-card h3 a,.category-card h2{color:var(--green)}
 .article-toc{border-right-color:var(--green)!important;background:var(--accent-soft1)!important}
 .swatches{gap:10px}

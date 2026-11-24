@@ -62,7 +62,7 @@ const allSchema = [...baseSchema, ...schema];
     <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="/" aria-label="طموح - الرئيسية"><span class="brand-mark">ط</span><span>طموح</span></a>
+        <a class="brand" href="/"><span class="brand-mark">ط</span><span>طموح</span></a>
         <nav aria-label="التنقل الرئيسي">
           <a href="/">الرئيسية</a>
           <a href="/categories/">التصنيفات</a>
@@ -80,14 +80,6 @@ const allSchema = [...baseSchema, ...schema];
         <small>© {new Date().getFullYear()} طموح. جميع الحقوق محفوظة.</small>
       </div>
     </footer>
-    <script type="speculationrules" is:inline>
-      {
-        "prerender": [{
-          "where": { "href_matches": "/*" },
-          "eagerness": "moderate"
-        }]
-      }
-    </script>
     <script is:inline>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
