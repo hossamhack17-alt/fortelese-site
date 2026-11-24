@@ -67,10 +67,29 @@ if os.path.exists(extra_file):
             lines.append(ln)
 
 lines.append("")
+
+# نهايات مائلة: Cloudflare Pages يخدم /x/ من x.html دون تحويل — نُثبّته صريحًا (200)
+slash_count = 0
+for ln in lines:
+    parts = ln.split()
+    if len(parts) != 3 or parts[2] != "200":
+        continue
+    src, dst = parts[0], parts[1]
+    if src.endswith(".html") and not src.endswith("/index.html"):
+        clean = src[: -len(".html")]
+        if clean.count("/") >= 1 and not clean.endswith("/index"):
+            lines.append(f"{clean}/  {dst}  200")
+            slash_count += 1
+
 for src, dst in LEGACY_301:
     lines.append(f"{urllib.parse.quote(src)}  {dst}  301")
 
 os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
 with open(out, "w", encoding="utf-8", newline="\n") as fh:
     fh.write("\n".join(lines) + "\n")
-print(f"wrote {out}: {count} proxies + {legacy_count} legacy 301 + {len(LEGACY_301)} manual 301")
+
+# تحقّق: القواعد المعنية موجودة
+for _ln in lines:
+    if "/health-insurance-uae-expats/" in _ln or "/en/fintech-guide/" in _ln:
+        print("RULE:", _ln)
+print(f"wrote {out}: {count} proxies + {slash_count} slash 200 + {legacy_count} legacy 301 + {len(LEGACY_301)} manual 301")

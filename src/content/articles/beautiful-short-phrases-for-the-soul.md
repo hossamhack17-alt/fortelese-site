@@ -5,6 +5,7 @@ pubDate: 2025-01-23T06:15:00.000-08:00
 updatedDate: 2025-01-23T06:15:04.324-08:00
 category: "عبارات وكلمات"
 categorySlug: phrases
+path: "beautiful-short-phrases-for-the-soul"
 tags: ["عبارات"]
 draft: false
 oldUrl: "https://www.fortelese.com/2025/01/beautiful-short-phrases-for-the-soul.html"

@@ -5,6 +5,7 @@ pubDate: 2025-01-23T06:33:00.000-08:00
 updatedDate: 2025-01-23T06:49:44.030-08:00
 category: "النجاح وتطوير الذات"
 categorySlug: self-development
+path: "timeless-self-quotes-wisdom-personal"
 tags: ["عبارات"]
 draft: false
 oldUrl: "https://www.fortelese.com/2025/01/timeless-self-quotes-wisdom-personal.html"

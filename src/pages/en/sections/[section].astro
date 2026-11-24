@@ -24,7 +24,7 @@ const posts = (await getCollection("articlesEn"))
   <div class="grid" style="margin-top:1.8rem">
     {posts.map((p) => (
       <article class="card">
-        <h3><a href={`/en/${p.id}/`}>{p.data.title}</a></h3>
+        <h3><a href={`/en/${p.data.path ?? p.id}/`}>{p.data.title}</a></h3>
         <p>{p.data.description}</p>
         <p class="meta">{p.data.pubDate?.toISOString().slice(0, 10)}</p>
       </article>

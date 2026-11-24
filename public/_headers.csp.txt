@@ -1,4 +1,4 @@
 # مولّد آليًا — انسخه إلى dist/_headers بعد البناء
-Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-P3upB5nSJgaMZ66JypQ23kO70VzvIaT2MSedNexWFNk=' 'sha256-gBLu4swI/efoO37zyZNY+1blP9TV+kMN19CZ2XExSZQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; upgrade-insecure-requests
+Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-P3upB5nSJgaMZ66JypQ23kO70VzvIaT2MSedNexWFNk=' 'sha256-48oY33PBbGwa42XPOMz2F9DEjBbr/46uyxFsN1yEp1o=' 'sha256-gBLu4swI/efoO37zyZNY+1blP9TV+kMN19CZ2XExSZQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; upgrade-insecure-requests
 Cross-Origin-Opener-Policy: same-origin
 Cross-Origin-Resource-Policy: same-origin

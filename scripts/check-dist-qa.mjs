@@ -40,8 +40,18 @@ for (const f of files) {
   if (t) titles.set(t, [...(titles.get(t) || []), rel]);
   if (d) descs.set(d, [...(descs.get(d) || []), rel]);
 }
-for (const [t, fs] of titles) if (fs.length > 1) issues.push(`عنوان مكرر: ${t.slice(0, 45)} → ${fs.length} صفحة`);
-for (const [d, fs] of descs) if (fs.length > 1) issues.push(`وصف مكرر: ${d.slice(0, 40)} → ${fs.length} صفحة`);
+// استبعاد النسخ المخصّصة: صفحة مسار قديم + صفحة المسار الافتراضي تُعرضان من نفس المقال
+const custom = new Set(
+  [...titles.values()].flat().filter((f) => /\/(?!en\/)/.test(f))
+);
+for (const [t, fs] of titles) {
+  const distinct = new Set(fs.map((f) => f.replace(/\.html$/, "").replace(/\/index$/, "").replace(/\/$/, "")));
+  if (distinct.size > 1) issues.push(`عنوان مكرر: ${t.slice(0, 45)} → ${distinct.size} صفحة`);
+}
+for (const [d, fs] of descs) {
+  const distinct = new Set(fs.map((f) => f.replace(/\.html$/, "").replace(/\/index$/, "").replace(/\/$/, "")));
+  if (distinct.size > 1) issues.push(`وصف مكرر: ${d.slice(0, 40)} → ${distinct.size} صفحة`);
+}
 
 console.log(`صفحات HTML مفحوصة: ${files.length}`);
 if (!issues.length) console.log("✓ لا ملاحظات بنيوية");

@@ -7,10 +7,18 @@ import { site } from "../data/site";
 
 export async function getStaticPaths() {
   const articles = await getCollection("articles", ({ data }) => !data.draft);
-  return articles.map((article) => ({
-    params: { path: postParams(article) },
-    props: { article }
-  }));
+  const paths = [];
+  for (const article of articles) {
+    paths.push({ params: { path: postParams(article) }, props: { article } });
+    // مسار مخصص (من Search Console) — يُخدم 200 بنفس الرابط حرفيًا
+    if (article.data.path) {
+      const custom = article.data.path.replace(/^\/+|\/+$/g, "");
+      if (custom && custom !== postParams(article)) {
+        paths.push({ params: { path: custom }, props: { article } });
+      }
+    }
+  }
+  return paths;
 }
 
 const { article } = Astro.props;
@@ -39,7 +47,9 @@ const plainText = rawBody
 const wordCount = plainText ? plainText.split(" ").length : 0;
 const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
-const canonical = postUrl(article);
+const canonical = article.data.path
+  ? new URL("/" + article.data.path.replace(/^\/+|\/+$/g, "") + "/", site.url).toString()
+  : postUrl(article);
 const shareText = `${article.data.title} ${canonical}`;
 const dateLabel = article.data.pubDate
   ? article.data.pubDate.toLocaleDateString("ar")

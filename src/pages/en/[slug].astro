@@ -4,7 +4,16 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
   const posts = await getCollection("articlesEn");
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  const paths = [];
+  for (const post of posts) {
+    paths.push({ params: { slug: post.id }, props: { post } });
+    // مسار مخصص من Search Console: يُخدم 200 بنفس اللاحقة
+    const p = post.data.path;
+    if (p && p !== post.id) {
+      paths.push({ params: { slug: p }, props: { post } });
+    }
+  }
+  return paths;
 }
 
 const { post } = Astro.props as { post: CollectionEntry<"articlesEn"> };

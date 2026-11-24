@@ -13,6 +13,7 @@ const articles = defineCollection({
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     oldUrl: z.string().url().optional(),
+    path: z.string().optional(),
     featuredImage: z.string().optional(),
     gallery: z.array(z.string()).optional(),
     author: z.string().default("فريق طموح")
@@ -31,6 +32,7 @@ const articlesEn = defineCollection({
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     originalUrl: z.string().optional(),
+    path: z.string().optional(),
     section: z.string().default("online-mba"),
     author: z.string().default("Fortelese Editorial")
   })

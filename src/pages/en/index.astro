@@ -41,9 +41,9 @@ const words = posts.reduce((n, p) => n + (p.body ?? "").replace(/<[^>]+>/g, " ")
   {featured && (
     <section style="margin-bottom:2.6rem">
       <p class="eyebrow">Latest</p>
-      <h2 style="margin-top:.2rem"><a href={`/en/${featured.id}/`} style="text-decoration:none;color:inherit">{featured.data.title}</a></h2>
+      <h2 style="margin-top:.2rem"><a href={`/en/${featured.data.path ?? featured.id}/`} style="text-decoration:none;color:inherit">{featured.data.title}</a></h2>
       <p class="lead">{featured.data.description}</p>
-      <p class="meta">{featured.data.pubDate?.toISOString().slice(0, 10)} · <a href={`/en/${featured.id}/`}>Read the guide →</a></p>
+      <p class="meta">{featured.data.pubDate?.toISOString().slice(0, 10)} · <a href={`/en/${featured.data.path ?? featured.id}/`}>Read the guide →</a></p>
     </section>
   )}
 
@@ -65,7 +65,7 @@ const words = posts.reduce((n, p) => n + (p.body ?? "").replace(/<[^>]+>/g, " ")
     <div class="grid">
       {rest.map((p) => (
         <article class="card">
-          <h3><a href={`/en/${p.id}/`}>{p.data.title}</a></h3>
+          <h3><a href={`/en/${p.data.path ?? p.id}/`}>{p.data.title}</a></h3>
           <p>{p.data.description}</p>
           <p class="meta">{p.data.pubDate?.toISOString().slice(0, 10)}</p>
         </article>

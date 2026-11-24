@@ -15,6 +15,9 @@ const mime = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript
   ".json": "application/json", ".xml": "application/xml", ".svg": "image/svg+xml",
   ".woff2": "font/woff2", ".webp": "image/webp", ".png": "image/png", ".ico": "image/x-icon" };
 
+// نفس ترتيب Cloudflare Pages: الملف الحقيقي أولًا ثم النسخة النظيفة
+const norm = (p) => p.replace(/^\/+|\/+$/g, "");
+
 function resolveFile(pathname) {
   const clean = decodeURIComponent(pathname.split("?")[0]);
   const cands = [clean, clean + ".html", join(clean, "index.html"), clean + "/index.html"];
@@ -29,8 +32,9 @@ createServer((req, res) => {
   const url = new URL(req.url, "http://x");
   const path = url.pathname;
 
+  const normPath = norm(decodeURIComponent(path));
   for (const [from, to, code] of rules) {
-    if (from === path) {
+    if (norm(decodeURIComponent(from)) === normPath) {
       if (code === "200") {
         const f = resolveFile(to);
         if (f) { res.writeHead(200, { "content-type": mime[extname(f)] || "text/html" }); res.end(readFileSync(f)); return; }
@@ -45,4 +49,4 @@ createServer((req, res) => {
   const nf = join(ROOT, "404.html");
   res.writeHead(404, { "content-type": "text/html" });
   res.end(existsSync(nf) ? readFileSync(nf) : "404");
-}).listen(8794, "127.0.0.1", () => console.log("redirect-check server on 8792, rules:", rules.length));
+}).listen(8799, "127.0.0.1", () => console.log("redirect-check server on 8792, rules:", rules.length));
